@@ -1,7 +1,10 @@
--- Create orders and order_items tables
--- Run this in your Supabase SQL Editor
+-- Safe setup for orders system
+-- This script handles existing objects gracefully
 
--- Create orders table
+-- 1. Fix image_urls column (if not exists)
+ALTER TABLE products ADD COLUMN IF NOT EXISTS image_urls TEXT[] DEFAULT '{}';
+
+-- 2. Create orders table (if not exists)
 CREATE TABLE IF NOT EXISTS orders (
     id UUID DEFAULT gen_random_uuid () PRIMARY KEY,
     customer_name TEXT NOT NULL,
@@ -27,7 +30,7 @@ CREATE TABLE IF NOT EXISTS orders (
         TIME ZONE DEFAULT NOW()
 );
 
--- Create order_items table
+-- 3. Create order_items table (if not exists)
 CREATE TABLE IF NOT EXISTS order_items (
     id UUID DEFAULT gen_random_uuid () PRIMARY KEY,
     order_id UUID NOT NULL REFERENCES orders (id) ON DELETE CASCADE,
@@ -39,7 +42,7 @@ CREATE TABLE IF NOT EXISTS order_items (
         TIME ZONE DEFAULT NOW()
 );
 
--- Create indexes for better performance
+-- 4. Create indexes (if not exists)
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders (status);
 
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders (created_at);
@@ -48,12 +51,23 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items (order_id);
 
 CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items (product_id);
 
--- Enable RLS
+-- 5. Enable RLS (safe to run multiple times)
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 
--- Create RLS policies for orders
+-- 6. Drop existing policies if they exist, then create new ones
+DROP POLICY IF EXISTS "Orders are viewable by everyone" ON orders;
+
+DROP POLICY IF EXISTS "Orders are insertable by everyone" ON orders;
+
+DROP POLICY IF EXISTS "Orders are updatable by admins" ON orders;
+
+DROP POLICY IF EXISTS "Order items are viewable by everyone" ON order_items;
+
+DROP POLICY IF EXISTS "Order items are insertable by everyone" ON order_items;
+
+-- 7. Create RLS policies
 CREATE POLICY "Orders are viewable by everyone" ON orders FOR
 SELECT USING (true);
 
@@ -72,7 +86,6 @@ UPDATE USING (
     )
 );
 
--- Create RLS policies for order_items
 CREATE POLICY "Order items are viewable by everyone" ON order_items FOR
 SELECT USING (true);
 
@@ -81,7 +94,7 @@ INSERT
 WITH
     CHECK (true);
 
--- Add trigger to update updated_at timestamp
+-- 8. Create or replace function for updated_at trigger
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -90,10 +103,13 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Drop trigger if it exists, then create it
+-- 9. Drop and recreate trigger (safe)
 DROP TRIGGER IF EXISTS update_orders_updated_at ON orders;
 
 CREATE TRIGGER update_orders_updated_at 
   BEFORE UPDATE ON orders 
   FOR EACH ROW 
   EXECUTE FUNCTION update_updated_at_column();
+
+-- 10. Verify setup
+SELECT 'Setup completed successfully!' as message;
