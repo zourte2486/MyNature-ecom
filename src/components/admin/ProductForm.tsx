@@ -64,11 +64,18 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
       setValue('price', product.price);
       setValue('category_id', product.category_id);
       setValue('stock_quantity', product.stock_quantity || 0);
+      
+      // Set existing images for preview
+      if (product.image_urls && product.image_urls.length > 0) {
+        setPreviewUrls(product.image_urls);
+      }
     } else {
       reset();
     }
     setImages([]);
-    setPreviewUrls([]);
+    if (!product) {
+      setPreviewUrls([]);
+    }
   }, [product, setValue, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -283,27 +290,53 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
                 </p>
               </div>
 
-              {/* Image Previews */}
+              {/* Existing Images (when editing) */}
+              {product && product.image_urls && product.image_urls.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">الصور الحالية:</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {product.image_urls.map((url, index) => (
+                      <div key={`existing-${index}`} className="relative">
+                        <Image
+                          src={url}
+                          alt={`Existing ${index + 1}`}
+                          width={96}
+                          height={96}
+                          className="w-full h-24 object-cover rounded-lg border"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
+                          <span className="text-white text-xs">صورة حالية</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* New Image Previews */}
               {previewUrls.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                  {previewUrls.map((url, index) => (
-                    <div key={index} className="relative">
-                      <Image
-                        src={url}
-                        alt={`Preview ${index + 1}`}
-                        width={96}
-                        height={96}
-                        className="w-full h-24 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">الصور الجديدة:</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {previewUrls.map((url, index) => (
+                      <div key={index} className="relative">
+                        <Image
+                          src={url}
+                          alt={`Preview ${index + 1}`}
+                          width={96}
+                          height={96}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
