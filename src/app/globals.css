@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary: #f59e0b;
+  /* Honey Gold */
+  --primary-dark: #d97706;
+  /* Dark Honey */
+  --secondary: #059669;
+  /* Herbal Green */
+  --accent: #fef3c7;
+  /* Honeycomb Beige */
+  --background: #fffdf8;
+  /* Warm Off-white */
+  --surface: #ffffff;
+  /* Panel White */
+  --text-primary: #1f2937;
+  /* Dark Gray */
+  --text-secondary: #6b7280;
+  /* Neutral Gray */
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-arabic: 'Cairo', 'Amiri', 'Noto Sans Arabic', sans-serif;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:text-left {
+  text-align: left;
+}
+
+[dir="rtl"] .rtl\:text-right {
+  text-align: right;
+}
+
+/* Arabic font for Arabic text */
+.arabic-text {
+  font-family: 'Cairo', 'Amiri', 'Noto Sans Arabic', sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Honey-themed scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--accent);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* Custom honey-themed focus styles */
+.focus-honey:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Honey drip animation for loading states */
+@keyframes honey-drip {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+.animate-honey-drip {
+  animation: honey-drip 2s ease-in-out infinite;
+}
+
+/* Float animation for hero elements */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Ensure numbers are always in ASCII format */
+.price,
+.quantity,
+.date,
+.phone {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}

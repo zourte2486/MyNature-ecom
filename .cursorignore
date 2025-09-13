@@ -1,0 +1,14 @@
+# Cursor AI ignore file
+# Files listed here will have AI features disabled
+
+# Only ignore these specific patterns:
+node_modules/
+.next/
+.git/
+.vercel/
+*.log
+*.cache
+*.tmp
+
+# Allow AI features for all other files
+
