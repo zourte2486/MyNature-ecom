@@ -11,6 +11,7 @@ import { ShoppingCart, Plus, Minus } from 'lucide-react';
 const orderSchema = z.object({
   quantity: z.number().min(1, 'الكمية مطلوبة').max(10, 'الحد الأقصى 10 قطع'),
   customer_name: z.string().min(2, 'الاسم مطلوب'),
+  customer_email: z.string().email('البريد الإلكتروني غير صحيح'),
   customer_phone: z.string().min(10, 'رقم الهاتف غير صحيح'),
   customer_address: z.string().min(10, 'العنوان مطلوب'),
   city: z.string().min(2, 'المدينة مطلوبة'),
@@ -44,31 +45,50 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
   const onSubmit = async (data: OrderFormData) => {
     setIsSubmitting(true);
     try {
-      // Import the createOrder function dynamically to avoid SSR issues
-      const { createOrder } = await import('@/lib/supabase/orders');
-      
       // Prepare order data
       const orderData = {
-        ...data,
-        quantity: quantity, // Use state quantity
+        customer_name: data.customer_name,
+        customer_email: data.customer_email,
+        customer_phone: data.customer_phone,
+        shipping_address: {
+          address: data.customer_address,
+          city: data.city,
+          country: 'Morocco'
+        },
         items: [{
           product_id: product.id,
-          quantity: quantity
-        }]
+          quantity: quantity,
+          price: product.price
+        }],
+        total_amount: totalPrice,
+        notes: data.notes || ''
       };
       
-      // Submit order to Supabase
-      const order = await createOrder(orderData);
+      // Submit order to API
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create order');
+      }
+
+      const order = await response.json();
       
       // Show success message
-      alert(`تم إرسال طلبك بنجاح! رقم الطلب: ${order.id}. سنتواصل معك قريباً.`);
+      alert(`تم إرسال طلبك بنجاح! رقم الطلب: ${order.id.slice(0, 8)}. سنتواصل معك قريباً.`);
       
       // Reset form
       reset();
       setQuantity(1);
     } catch (error) {
       console.error('Error submitting order:', error);
-      alert('حدث خطأ في إرسال الطلب. يرجى المحاولة مرة أخرى.');
+      alert(`حدث خطأ في إرسال الطلب: ${error instanceof Error ? error.message : 'يرجى المحاولة مرة أخرى'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -156,6 +176,21 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
               <p className="text-red-500 text-sm mt-1">{errors.customer_phone.message}</p>
             )}
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-text-primary mb-2">
+            البريد الإلكتروني *
+          </label>
+          <input
+            {...register('customer_email')}
+            type="email"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            placeholder="example@email.com"
+          />
+          {errors.customer_email && (
+            <p className="text-red-500 text-sm mt-1">{errors.customer_email.message}</p>
+          )}
         </div>
 
         <div>

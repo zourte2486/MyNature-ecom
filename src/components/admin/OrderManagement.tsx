@@ -8,14 +8,18 @@ interface OrderManagementProps {
   orders: Array<{
     id: string;
     customer_name: string;
-    customer_phone: string;
+    customer_email: string;
+    customer_phone?: string;
+    shipping_address: any;
     total_amount: number;
     status: string;
     created_at: string;
+    order_items?: any[];
   }>;
+  onRefresh?: () => void;
 }
 
-export function OrderManagement({ orders: initialOrders }: OrderManagementProps) {
+export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManagementProps) {
   const [orders, setOrders] = useState(initialOrders);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -32,13 +36,29 @@ export function OrderManagement({ orders: initialOrders }: OrderManagementProps)
 
   const handleStatusUpdate = async (orderId: string, newStatus: string) => {
     try {
-      // Here you would call the Supabase update function
-      console.log('Updating order status:', orderId, newStatus);
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update order status');
+      }
+
+      // Update local state
       setOrders(orders.map(order => 
         order.id === orderId 
           ? { ...order, status: newStatus }
           : order
       ));
+
+      // Refresh data from server
+      if (onRefresh) {
+        onRefresh();
+      }
     } catch (error) {
       console.error('Error updating order status:', error);
       alert('حدث خطأ في تحديث حالة الطلب');
@@ -46,16 +66,16 @@ export function OrderManagement({ orders: initialOrders }: OrderManagementProps)
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PENDING':
+    switch (status.toLowerCase()) {
+      case 'pending':
         return 'bg-yellow-100 text-yellow-800';
-      case 'CONFIRMED':
+      case 'confirmed':
         return 'bg-blue-100 text-blue-800';
-      case 'SHIPPED':
+      case 'shipped':
         return 'bg-purple-100 text-purple-800';
-      case 'DELIVERED':
+      case 'delivered':
         return 'bg-green-100 text-green-800';
-      case 'CANCELLED':
+      case 'cancelled':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -63,16 +83,16 @@ export function OrderManagement({ orders: initialOrders }: OrderManagementProps)
   };
 
   const getStatusText = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'معلق';
-      case 'CONFIRMED':
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'في الانتظار';
+      case 'confirmed':
         return 'مؤكد';
-      case 'SHIPPED':
+      case 'shipped':
         return 'تم الشحن';
-      case 'DELIVERED':
+      case 'delivered':
         return 'تم التسليم';
-      case 'CANCELLED':
+      case 'cancelled':
         return 'ملغي';
       default:
         return status;
@@ -101,11 +121,11 @@ export function OrderManagement({ orders: initialOrders }: OrderManagementProps)
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           >
             <option value="all">جميع الطلبات</option>
-            <option value="PENDING">معلق</option>
-            <option value="CONFIRMED">مؤكد</option>
-            <option value="SHIPPED">تم الشحن</option>
-            <option value="DELIVERED">تم التسليم</option>
-            <option value="CANCELLED">ملغي</option>
+            <option value="pending">في الانتظار</option>
+            <option value="confirmed">مؤكد</option>
+            <option value="shipped">تم الشحن</option>
+            <option value="delivered">تم التسليم</option>
+            <option value="cancelled">ملغي</option>
           </select>
         </div>
       </div>
@@ -173,21 +193,21 @@ export function OrderManagement({ orders: initialOrders }: OrderManagementProps)
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2 space-x-reverse">
                         <button
-                          onClick={() => handleStatusUpdate(order.id, 'CONFIRMED')}
+                          onClick={() => handleStatusUpdate(order.id, 'confirmed')}
                           className="text-green-600 hover:text-green-900"
                           title="تأكيد الطلب"
                         >
                           <CheckCircle className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleStatusUpdate(order.id, 'SHIPPED')}
+                          onClick={() => handleStatusUpdate(order.id, 'shipped')}
                           className="text-blue-600 hover:text-blue-900"
                           title="تم الشحن"
                         >
                           <Truck className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleStatusUpdate(order.id, 'CANCELLED')}
+                          onClick={() => handleStatusUpdate(order.id, 'cancelled')}
                           className="text-red-600 hover:text-red-900"
                           title="إلغاء الطلب"
                         >

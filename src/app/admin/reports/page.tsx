@@ -19,27 +19,30 @@ export default function ReportsPage() {
   const fetchReports = async () => {
     try {
       // Fetch products count
-      const { count: productsCount } = await supabase
-        .from('products')
-        .select('*', { count: 'exact', head: true });
+      const productsResponse = await fetch('/api/admin/products');
+      const products = await productsResponse.json();
+      const productsCount = Array.isArray(products) ? products.length : 0;
 
-      // Fetch orders count
-      const { count: ordersCount } = await supabase
-        .from('orders')
-        .select('*', { count: 'exact', head: true });
+      // Fetch orders count and recent orders
+      const ordersResponse = await fetch('/api/orders');
+      const orders = await ordersResponse.json();
+      const ordersCount = Array.isArray(orders) ? orders.length : 0;
 
-      // Fetch recent orders
-      const { data: recentOrders } = await supabase
-        .from('orders')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10);
+      // Calculate total revenue
+      const totalRevenue = Array.isArray(orders) 
+        ? orders.reduce((sum, order) => sum + (order.total_amount || 0), 0)
+        : 0;
+
+      // Get recent orders (last 10)
+      const recentOrders = Array.isArray(orders) 
+        ? orders.slice(0, 10)
+        : [];
 
       setReports({
-        totalProducts: productsCount || 0,
-        totalOrders: ordersCount || 0,
-        totalRevenue: 0, // Calculate from orders if needed
-        recentOrders: recentOrders || []
+        totalProducts: productsCount,
+        totalOrders: ordersCount,
+        totalRevenue: totalRevenue,
+        recentOrders: recentOrders
       });
     } catch (error) {
       console.error('Error fetching reports:', error);
@@ -111,7 +114,7 @@ export default function ReportsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {reports.recentOrders.map((order: any) => (
+                  {reports.recentOrders.map((order: { id: string; customer_name?: string; created_at: string; status?: string }) => (
                     <tr key={order.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         #{order.id.slice(0, 8)}
