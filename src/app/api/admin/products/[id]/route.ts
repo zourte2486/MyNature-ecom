@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { uploadMultipleToSupabaseStorage } from '@/lib/supabase/storage';
+import { uploadMultipleToVercelBlob } from '@/lib/vercel-blob';
 
 // GET - Fetch single product
 export async function GET(
@@ -60,11 +60,11 @@ export async function PUT(
     
     if (imageFiles && imageFiles.length > 0 && imageFiles[0].size > 0) {
       try {
-        console.log('Uploading images for update:', imageFiles.length, 'files');
-        imageUrls = await uploadMultipleToSupabaseStorage(imageFiles);
-        console.log('Images uploaded successfully to Supabase Storage for update:', imageUrls);
+        console.log('Uploading images to Vercel Blob for update:', imageFiles.length, 'files');
+        imageUrls = await uploadMultipleToVercelBlob(imageFiles, 'products');
+        console.log('Images uploaded successfully to Vercel Blob for update:', imageUrls);
       } catch (error) {
-        console.error('Error uploading images to Supabase Storage:', error);
+        console.error('Error uploading images to Vercel Blob:', error);
         throw new Error(`Image upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     } else {

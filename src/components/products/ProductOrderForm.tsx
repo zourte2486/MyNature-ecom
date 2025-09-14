@@ -11,7 +11,6 @@ import { ShoppingCart, Plus, Minus } from 'lucide-react';
 const orderSchema = z.object({
   quantity: z.number().min(1, 'الكمية مطلوبة').max(10, 'الحد الأقصى 10 قطع'),
   customer_name: z.string().min(2, 'الاسم مطلوب'),
-  customer_email: z.string().email('البريد الإلكتروني غير صحيح'),
   customer_phone: z.string().min(10, 'رقم الهاتف غير صحيح'),
   customer_address: z.string().min(10, 'العنوان مطلوب'),
   city: z.string().min(2, 'المدينة مطلوبة'),
@@ -48,7 +47,7 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
       // Prepare order data
       const orderData = {
         customer_name: data.customer_name,
-        customer_email: data.customer_email,
+        customer_email: `${data.customer_name.replace(/\s+/g, '').toLowerCase()}@customer.local`,
         customer_phone: data.customer_phone,
         shipping_address: {
           address: data.customer_address,
@@ -178,20 +177,6 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-text-primary mb-2">
-            البريد الإلكتروني *
-          </label>
-          <input
-            {...register('customer_email')}
-            type="email"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-            placeholder="example@email.com"
-          />
-          {errors.customer_email && (
-            <p className="text-red-500 text-sm mt-1">{errors.customer_email.message}</p>
-          )}
-        </div>
 
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">

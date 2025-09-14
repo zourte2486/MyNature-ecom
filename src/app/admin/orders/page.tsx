@@ -47,14 +47,18 @@ export default function AdminOrdersPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
       const response = await fetch('/api/orders');
       
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch orders`);
       }
       
       const data = await response.json();
-      setOrders(data);
+      console.log('Fetched orders:', data);
+      setOrders(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching orders:', error);
       setError(error instanceof Error ? error.message : 'Unknown error');
