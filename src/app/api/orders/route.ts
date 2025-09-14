@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
             id,
             name_ar,
             price,
-            image_urls
+            images
           )
         )
       `)
@@ -79,7 +79,8 @@ export async function POST(request: NextRequest) {
         customer_name,
         customer_email,
         customer_phone,
-        shipping_address,
+        customer_address: shipping_address.address,
+        customer_city: shipping_address.city,
         total_amount,
         notes,
         status: 'pending'

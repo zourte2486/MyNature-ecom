@@ -4,11 +4,6 @@ import { useState } from 'react';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { Eye, Search } from 'lucide-react';
 
-interface ShippingAddress {
-  address: string;
-  city: string;
-  country: string;
-}
 
 interface OrderItem {
   id: string;
@@ -19,7 +14,7 @@ interface OrderItem {
     id: string;
     name_ar: string;
     price: number;
-    image_urls: string[];
+    images: string[];
   };
 }
 
@@ -28,7 +23,8 @@ interface Order {
   customer_name: string;
   customer_email: string;
   customer_phone?: string;
-  shipping_address: ShippingAddress;
+  customer_address: string;
+  customer_city: string;
   total_amount: number;
   status: string;
   notes?: string;
@@ -226,10 +222,10 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
                         <div>
                           <span className="font-medium">العنوان:</span>
                           <div className="text-gray-600">
-                            {order.shipping_address.address}
+                            {order.customer_address}
                           </div>
                           <div className="text-gray-600">
-                            {order.shipping_address.city}, {order.shipping_address.country}
+                            {order.customer_city}, Morocco
                           </div>
                         </div>
                         {order.notes && (

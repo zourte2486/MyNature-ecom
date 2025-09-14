@@ -3,11 +3,6 @@
 import { useState, useEffect } from 'react';
 import { OrderManagement } from '@/components/admin/OrderManagement';
 
-interface ShippingAddress {
-  address: string;
-  city: string;
-  country: string;
-}
 
 interface OrderItem {
   id: string;
@@ -18,7 +13,7 @@ interface OrderItem {
     id: string;
     name_ar: string;
     price: number;
-    image_urls: string[];
+    images: string[];
   };
 }
 
@@ -27,7 +22,8 @@ interface Order {
   customer_name: string;
   customer_email: string;
   customer_phone?: string;
-  shipping_address: ShippingAddress;
+  customer_address: string;
+  customer_city: string;
   total_amount: number;
   status: string;
   notes?: string;
