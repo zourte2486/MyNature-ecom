@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import { OrderManagement } from '@/components/admin/OrderManagement';
 
 interface ShippingAddress {
-  street: string;
+  address: string;
   city: string;
-  postal_code: string;
   country: string;
 }
 
@@ -31,6 +30,7 @@ interface Order {
   shipping_address: ShippingAddress;
   total_amount: number;
   status: string;
+  notes?: string;
   created_at: string;
   order_items?: OrderItem[];
 }

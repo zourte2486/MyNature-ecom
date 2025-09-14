@@ -2,12 +2,11 @@
 
 import { useState } from 'react';
 import { formatPrice, formatDate } from '@/lib/utils';
-import { Eye, Search, CheckCircle, XCircle, Truck } from 'lucide-react';
+import { Eye, Search } from 'lucide-react';
 
 interface ShippingAddress {
-  street: string;
+  address: string;
   city: string;
-  postal_code: string;
   country: string;
 }
 
@@ -32,6 +31,7 @@ interface Order {
   shipping_address: ShippingAddress;
   total_amount: number;
   status: string;
+  notes?: string;
   created_at: string;
   order_items?: OrderItem[];
 }
@@ -63,19 +63,28 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update order status');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update order status');
       }
+
+      const updatedOrder = await response.json();
 
       // Update local state
       setOrders(orders.map(order => 
         order.id === orderId 
-          ? { ...order, status: newStatus }
+          ? { ...order, status: newStatus, updated_at: updatedOrder.updated_at }
           : order
       ));
+
+      // Show success message
+      alert(`تم تحديث حالة الطلب إلى: ${getStatusText(newStatus)}`);
 
       // Refresh data from server
       if (onRefresh) {
@@ -83,7 +92,7 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
       }
     } catch (error) {
       console.error('Error updating order status:', error);
-      alert('حدث خطأ في تحديث حالة الطلب');
+      alert(`حدث خطأ في تحديث حالة الطلب: ${error instanceof Error ? error.message : 'يرجى المحاولة مرة أخرى'}`);
     }
   };
 
@@ -165,6 +174,12 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
                   العميل
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  التفاصيل
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  المنتجات
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   المبلغ
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -181,7 +196,7 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
                     لا توجد طلبات
                   </td>
                 </tr>
@@ -189,7 +204,7 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
                 filteredOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      #{order.id}
+                      #{order.id.slice(0, 8)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
@@ -197,12 +212,61 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
                           {order.customer_name}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {order.customer_phone}
+                          {order.customer_email}
                         </div>
+                        {order.customer_phone && (
+                          <div className="text-sm text-gray-500">
+                            {order.customer_phone}
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatPrice(order.total_amount)}
+                      <div className="space-y-1">
+                        <div>
+                          <span className="font-medium">العنوان:</span>
+                          <div className="text-gray-600">
+                            {order.shipping_address.address}
+                          </div>
+                          <div className="text-gray-600">
+                            {order.shipping_address.city}, {order.shipping_address.country}
+                          </div>
+                        </div>
+                        {order.notes && (
+                          <div>
+                            <span className="font-medium">ملاحظات:</span>
+                            <div className="text-gray-600 text-xs">
+                              {order.notes}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <div className="space-y-1">
+                        {order.order_items?.map((item, index) => (
+                          <div key={index} className="flex items-center space-x-2 rtl:space-x-reverse">
+                            <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-xs">
+                              {item.quantity}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium truncate">
+                                {item.product?.name_ar || 'منتج غير محدد'}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {formatPrice(item.price)} × {item.quantity}
+                              </div>
+                            </div>
+                          </div>
+                        )) || (
+                          <div className="text-gray-500 text-xs">لا توجد منتجات</div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <div className="font-medium">
+                        {formatPrice(order.total_amount)}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
@@ -214,27 +278,17 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2 space-x-reverse">
-                        <button
-                          onClick={() => handleStatusUpdate(order.id, 'confirmed')}
-                          className="text-green-600 hover:text-green-900"
-                          title="تأكيد الطلب"
+                        <select
+                          value={order.status}
+                          onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                          className="text-xs border border-gray-300 rounded px-2 py-1"
                         >
-                          <CheckCircle className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleStatusUpdate(order.id, 'shipped')}
-                          className="text-blue-600 hover:text-blue-900"
-                          title="تم الشحن"
-                        >
-                          <Truck className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleStatusUpdate(order.id, 'cancelled')}
-                          className="text-red-600 hover:text-red-900"
-                          title="إلغاء الطلب"
-                        >
-                          <XCircle className="w-4 h-4" />
-                        </button>
+                          <option value="pending">في الانتظار</option>
+                          <option value="confirmed">مؤكد</option>
+                          <option value="shipped">تم الشحن</option>
+                          <option value="delivered">تم التسليم</option>
+                          <option value="cancelled">ملغي</option>
+                        </select>
                         <button
                           className="text-indigo-600 hover:text-indigo-900"
                           title="عرض التفاصيل"

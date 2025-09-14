@@ -68,6 +68,8 @@ export async function POST(request: NextRequest) {
       imageUrls = ['/images/placeholder-honey.svg'];
     }
 
+    console.log('Final imageUrls to be saved:', imageUrls);
+
     console.log('Inserting product with data:', {
       name: productData.name,
       name_ar: productData.name_ar,

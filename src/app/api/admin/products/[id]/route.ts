@@ -2,6 +2,38 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { uploadMultipleToSupabaseStorage } from '@/lib/supabase/storage';
 
+// GET - Fetch single product
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const { data: product, error } = await supabaseAdmin
+      .from('products')
+      .select(`
+        *,
+        category:categories(*)
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching product:', error);
+      return NextResponse.json({
+        error: `Failed to fetch product: ${error.message}`
+      }, { status: 500 });
+    }
+
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error('Error in GET /api/admin/products/[id]:', error);
+    return NextResponse.json({
+      error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    }, { status: 500 });
+  }
+}
+
 // PUT - Update a product
 export async function PUT(
   request: NextRequest,
