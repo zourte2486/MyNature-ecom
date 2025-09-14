@@ -1,10 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+
+interface RecentOrder {
+  id: string;
+  customer_name?: string;
+  created_at: string;
+  status?: string;
+}
+
+interface Reports {
+  totalProducts: number;
+  totalOrders: number;
+  totalRevenue: number;
+  recentOrders: RecentOrder[];
+}
 
 export default function ReportsPage() {
-  const [reports, setReports] = useState({
+  const [reports, setReports] = useState<Reports>({
     totalProducts: 0,
     totalOrders: 0,
     totalRevenue: 0,
@@ -34,7 +47,7 @@ export default function ReportsPage() {
         : 0;
 
       // Get recent orders (last 10)
-      const recentOrders = Array.isArray(orders) 
+      const recentOrders: RecentOrder[] = Array.isArray(orders) 
         ? orders.slice(0, 10)
         : [];
 
@@ -114,7 +127,7 @@ export default function ReportsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {reports.recentOrders.map((order: { id: string; customer_name?: string; created_at: string; status?: string }) => (
+                  {reports.recentOrders.map((order: RecentOrder) => (
                     <tr key={order.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         #{order.id.slice(0, 8)}

@@ -95,7 +95,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Create order items
-    const orderItems = items.map((item: any) => ({
+    interface OrderItem {
+      product_id: string;
+      quantity: number;
+      price: number;
+    }
+    
+    const orderItems = items.map((item: OrderItem) => ({
       order_id: order.id,
       product_id: item.product_id,
       quantity: item.quantity,
@@ -121,15 +127,24 @@ export async function POST(request: NextRequest) {
 
     // Update product stock quantities
     for (const item of items) {
-      const { error: stockError } = await supabaseAdmin
+      // Get current stock quantity first
+      const { data: product } = await supabaseAdmin
         .from('products')
-        .update({
-          stock_quantity: supabaseAdmin.raw(`stock_quantity - ${item.quantity}`)
-        })
-        .eq('id', item.product_id);
+        .select('stock_quantity')
+        .eq('id', item.product_id)
+        .single();
+      
+      if (product) {
+        const { error: stockError } = await supabaseAdmin
+          .from('products')
+          .update({
+            stock_quantity: product.stock_quantity - item.quantity
+          })
+          .eq('id', item.product_id);
 
-      if (stockError) {
-        console.error('Error updating stock for product:', item.product_id, stockError);
+        if (stockError) {
+          console.error('Error updating stock for product:', item.product_id, stockError);
+        }
       }
     }
 

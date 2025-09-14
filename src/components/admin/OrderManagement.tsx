@@ -4,18 +4,40 @@ import { useState } from 'react';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { Eye, Search, CheckCircle, XCircle, Truck } from 'lucide-react';
 
-interface OrderManagementProps {
-  orders: Array<{
+interface ShippingAddress {
+  street: string;
+  city: string;
+  postal_code: string;
+  country: string;
+}
+
+interface OrderItem {
+  id: string;
+  product_id: string;
+  quantity: number;
+  price: number;
+  product?: {
     id: string;
-    customer_name: string;
-    customer_email: string;
-    customer_phone?: string;
-    shipping_address: any;
-    total_amount: number;
-    status: string;
-    created_at: string;
-    order_items?: any[];
-  }>;
+    name_ar: string;
+    price: number;
+    image_urls: string[];
+  };
+}
+
+interface Order {
+  id: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  shipping_address: ShippingAddress;
+  total_amount: number;
+  status: string;
+  created_at: string;
+  order_items?: OrderItem[];
+}
+
+interface OrderManagementProps {
+  orders: Order[];
   onRefresh?: () => void;
 }
 
@@ -26,7 +48,7 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customer_phone.includes(searchTerm) ||
+                         (order.customer_phone && order.customer_phone.includes(searchTerm)) ||
                          order.id.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = filterStatus === 'all' || order.status === filterStatus;

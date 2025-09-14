@@ -3,16 +3,36 @@
 import { useState, useEffect } from 'react';
 import { OrderManagement } from '@/components/admin/OrderManagement';
 
+interface ShippingAddress {
+  street: string;
+  city: string;
+  postal_code: string;
+  country: string;
+}
+
+interface OrderItem {
+  id: string;
+  product_id: string;
+  quantity: number;
+  price: number;
+  product?: {
+    id: string;
+    name_ar: string;
+    price: number;
+    image_urls: string[];
+  };
+}
+
 interface Order {
   id: string;
   customer_name: string;
   customer_email: string;
   customer_phone?: string;
-  shipping_address: any;
+  shipping_address: ShippingAddress;
   total_amount: number;
   status: string;
   created_at: string;
-  order_items?: any[];
+  order_items?: OrderItem[];
 }
 
 export default function AdminOrdersPage() {

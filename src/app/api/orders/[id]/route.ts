@@ -4,9 +4,10 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 // GET - Fetch single order
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { data: order, error } = await supabaseAdmin
       .from('orders')
       .select(`
@@ -21,7 +22,7 @@ export async function GET(
           )
         )
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error) {
@@ -43,9 +44,10 @@ export async function GET(
 // PUT - Update order status
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { status, notes } = await request.json();
 
     if (!status) {
@@ -61,7 +63,7 @@ export async function PUT(
         notes: notes || null,
         updated_at: new Date().toISOString()
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -84,23 +86,33 @@ export async function PUT(
 // DELETE - Delete order
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // First, restore stock quantities
     const { data: orderItems } = await supabaseAdmin
       .from('order_items')
       .select('product_id, quantity')
-      .eq('order_id', params.id);
+      .eq('order_id', id);
 
     if (orderItems) {
       for (const item of orderItems) {
-        await supabaseAdmin
+        // Get current stock quantity first
+        const { data: product } = await supabaseAdmin
           .from('products')
-          .update({
-            stock_quantity: supabaseAdmin.raw(`stock_quantity + ${item.quantity}`)
-          })
-          .eq('id', item.product_id);
+          .select('stock_quantity')
+          .eq('id', item.product_id)
+          .single();
+        
+        if (product) {
+          await supabaseAdmin
+            .from('products')
+            .update({
+              stock_quantity: product.stock_quantity + item.quantity
+            })
+            .eq('id', item.product_id);
+        }
       }
     }
 
@@ -108,13 +120,13 @@ export async function DELETE(
     await supabaseAdmin
       .from('order_items')
       .delete()
-      .eq('order_id', params.id);
+      .eq('order_id', id);
 
     // Delete order
     const { error } = await supabaseAdmin
       .from('orders')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) {
       console.error('Error deleting order:', error);
