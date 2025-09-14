@@ -19,7 +19,9 @@ export interface Product {
   description_ar?: string
   price: number
   category_id: string
-  image_urls: string[]
+  image_url?: string
+  images: string[]
+  image_urls?: string[]  // Keep for backward compatibility
   stock_quantity?: number
   weight_grams?: number
   is_active: boolean

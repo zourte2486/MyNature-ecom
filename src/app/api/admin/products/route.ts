@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
       price: productData.price,
       category_id: productData.category_id,
       stock_quantity: productData.stock_quantity,
+      image_url: imageUrls[0] || null,
       image_urls: imageUrls
     });
 
@@ -89,7 +90,8 @@ export async function POST(request: NextRequest) {
         price: productData.price,
         category_id: productData.category_id,
         stock_quantity: productData.stock_quantity,
-        image_urls: imageUrls,
+        image_url: imageUrls[0] || null,  // Store first image in single column
+        images: imageUrls,                // Store all images in images array column
         is_active: true,
       })
       .select(`

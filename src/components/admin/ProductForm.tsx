@@ -66,8 +66,8 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
       setValue('stock_quantity', product.stock_quantity || 0);
       
       // Set existing images for preview
-      if (product.image_urls && product.image_urls.length > 0) {
-        setPreviewUrls(product.image_urls);
+      if (product.images && product.images.length > 0) {
+        setPreviewUrls(product.images);
       }
     } else {
       reset();
@@ -291,11 +291,11 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
               </div>
 
               {/* Existing Images (when editing) */}
-              {product && product.image_urls && product.image_urls.length > 0 && (
+              {product && product.images && product.images.length > 0 && (
                 <div className="mt-4">
                   <h4 className="text-sm font-medium text-gray-700 mb-2">الصور الحالية:</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {product.image_urls.map((url, index) => (
+                    {product.images.map((url, index) => (
                       <div key={`existing-${index}`} className="relative">
                         <Image
                           src={url}

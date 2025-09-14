@@ -92,7 +92,8 @@ export async function PUT(
         price: productData.price,
         category_id: productData.category_id,
         stock_quantity: productData.stock_quantity,
-        image_urls: imageUrls,
+        image_url: imageUrls[0] || null,  // Store first image in single column
+        image_urls: imageUrls,            // Store all images in array column
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)

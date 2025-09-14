@@ -60,9 +60,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
           {/* Product Images */}
           <div className="space-y-4">
             <div className="aspect-square bg-white rounded-xl shadow-honey overflow-hidden">
-              {(product.image_urls && product.image_urls.length > 0) ? (
+              {(product.images && product.images.length > 0) ? (
                 <Image
-                  src={product.image_urls[0]}
+                  src={product.images[0]}
                   alt={product.name_ar}
                   width={600}
                   height={600}
@@ -82,9 +82,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
             
             {/* Additional Images */}
-            {product.image_urls && product.image_urls.length > 1 && (
+            {product.images && product.images.length > 1 && (
               <div className="grid grid-cols-3 gap-2">
-                {product.image_urls.slice(1).map((image, index) => (
+                {product.images.slice(1).map((image, index) => (
                   <div key={index} className="aspect-square bg-white rounded-lg shadow-sm overflow-hidden">
                     <Image
                       src={image}
