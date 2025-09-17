@@ -1,8 +1,8 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
 
 interface ProductCardProps {
   product: Product;
@@ -13,16 +13,17 @@ export function ProductCard({ product }: ProductCardProps) {
     <div className="group bg-white rounded-xl shadow-honey hover:shadow-honey-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
       {/* Product Image */}
       <div className="relative aspect-square overflow-hidden">
-         {(product.images && product.images.length > 0) ? (
-          <Image
-            src={product.images[0]}
+         {((product.images && product.images.length > 0) || (product.image_urls && product.image_urls.length > 0)) ? (
+          <OptimizedImage
+            src={product.images?.[0] || product.image_urls?.[0] || '/images/placeholder-honey.svg'}
             alt={product.name_ar}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-            <Image
+            <OptimizedImage
               src="/images/placeholder-honey.svg"
               alt="Placeholder"
               width={100}
@@ -118,3 +119,27 @@ export function ProductCard({ product }: ProductCardProps) {
     </div>
   );
 }
+
+
+          )}
+        </div>
+
+        {/* Stock Quantity */}
+        {product.stock_quantity && (
+          <div className="text-xs text-text-secondary mb-3">
+            متوفر: {product.stock_quantity} قطعة
+          </div>
+        )}
+
+        {/* Action Button */}
+        <Link
+          href={`/products/${product.id}`}
+          className="w-full bg-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200 text-center block"
+        >
+          عرض التفاصيل
+        </Link>
+      </div>
+    </div>
+  );
+}
+

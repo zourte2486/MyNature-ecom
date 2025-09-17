@@ -1,5 +1,5 @@
 import { ProductManagement } from '@/components/admin/ProductManagement';
-import { getProducts } from '@/lib/supabase/products';
+import { getAdminProducts } from '@/lib/supabase/products';
 import { getCategories } from '@/lib/supabase/categories';
 import { Product, Category } from '@/lib/types';
 
@@ -10,7 +10,7 @@ export default async function AdminProductsPage() {
   
   try {
     [products, categories] = await Promise.all([
-      getProducts(),
+      getAdminProducts(),
       getCategories()
     ]);
   } catch (error) {

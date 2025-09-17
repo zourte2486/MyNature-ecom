@@ -3,6 +3,7 @@ import { ArrowLeft, Truck, Shield, Heart } from 'lucide-react';
 import { ProductCard } from '@/components/products/ProductCard';
 import { HeroSection } from '@/components/home/HeroSection';
 import { FeaturesSection } from '@/components/home/FeaturesSection';
+import { SearchBanner } from '@/components/home/SearchBanner';
 import { getFeaturedProducts } from '@/lib/supabase/products';
 import { Product } from '@/lib/types';
 
@@ -20,6 +21,9 @@ export default async function Home() {
 
       {/* Hero Section */}
       <HeroSection />
+
+      {/* Search Banner */}
+      <SearchBanner />
 
       {/* Features Section */}
       <FeaturesSection />

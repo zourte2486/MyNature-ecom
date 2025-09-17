@@ -91,7 +91,8 @@ export async function POST(request: NextRequest) {
         category_id: productData.category_id,
         stock_quantity: productData.stock_quantity,
         image_url: imageUrls[0] || null,  // Store first image in single column
-        images: imageUrls,                // Store all images in images array column
+        images: imageUrls,                // Store all images in images array column (frontend uses this)
+        image_urls: imageUrls,            // Store all images in image_urls array column (backup)
         is_active: true,
       })
       .select(`

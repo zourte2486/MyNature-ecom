@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { X, Upload, Loader2 } from 'lucide-react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { Product, Category } from '@/lib/types';
 import { useToast } from '@/components/ui/Toast';
 
@@ -33,6 +33,7 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [currentImages, setCurrentImages] = useState<string[]>([]);
   const { showSuccess, showError, showLoading, hideToast } = useToast();
 
   const {
@@ -65,26 +66,70 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
       setValue('category_id', product.category_id);
       setValue('stock_quantity', product.stock_quantity || 0);
       
-      // Set existing images for preview
+      // Set current images (existing images from database)
       if (product.images && product.images.length > 0) {
-        setPreviewUrls(product.images);
+        setCurrentImages(product.images);
+      } else if (product.image_urls && product.image_urls.length > 0) {
+        setCurrentImages(product.image_urls);
+      } else {
+        setCurrentImages([]);
       }
     } else {
       reset();
+      setCurrentImages([]);
     }
+    
+    // Reset new uploads
     setImages([]);
-    if (!product) {
-      setPreviewUrls([]);
-    }
+    setPreviewUrls([]);
   }, [product, setValue, reset]);
+
+  const validateImage = (file: File): string | null => {
+    // Check file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/avif'];
+    if (!allowedTypes.includes(file.type)) {
+      return `نوع الملف غير مدعوم. الأنواع المدعومة: JPEG, PNG, WebP, AVIF`;
+    }
+
+    // Check file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      return `حجم الملف كبير جداً. الحد الأقصى: 5MB`;
+    }
+
+    // Check image dimensions (will be validated after load)
+    return null;
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setImages(files);
     
-    // Create preview URLs
-    const urls = files.map(file => URL.createObjectURL(file));
-    setPreviewUrls(urls);
+    // Validate each file
+    const validFiles: File[] = [];
+    const errors: string[] = [];
+    
+    files.forEach((file, index) => {
+      const error = validateImage(file);
+      if (error) {
+        errors.push(`الصورة ${index + 1}: ${error}`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    // Show errors if any
+    if (errors.length > 0) {
+      showError('خطأ في الصور', errors.join('\n'));
+    }
+
+    // Only set valid files
+    if (validFiles.length > 0) {
+      setImages(validFiles);
+      
+      // Create preview URLs
+      const urls = validFiles.map(file => URL.createObjectURL(file));
+      setPreviewUrls(urls);
+    }
   };
 
   const removeImage = (index: number) => {
@@ -106,6 +151,7 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
       reset();
       setImages([]);
       setPreviewUrls([]);
+      setCurrentImages([]);
     } catch (error) {
       hideToast(loadingToast);
       showError('خطأ في الحفظ', 'حدث خطأ أثناء حفظ المنتج. يرجى المحاولة مرة أخرى.');
@@ -274,7 +320,7 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
                 <input
                   type="file"
                   multiple
-                  accept="image/*"
+                  accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
                   onChange={handleImageChange}
                   className="hidden"
                   id="image-upload"
@@ -285,21 +331,30 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
                 >
                   اختر الصور
                 </label>
-                <p className="text-sm text-gray-500 mt-1">
-                  يمكنك اختيار عدة صور
-                </p>
+                <div className="text-sm text-gray-500 mt-2 space-y-1">
+                  <p>يمكنك اختيار عدة صور</p>
+                  <p className="text-xs">
+                    الأنواع المدعومة: JPEG, PNG, WebP, AVIF
+                  </p>
+                  <p className="text-xs">
+                    الحد الأقصى: 5MB لكل صورة
+                  </p>
+                  <p className="text-xs">
+                    الأبعاد الموصى بها: 400x400px أو أكبر
+                  </p>
+                </div>
               </div>
 
-              {/* Existing Images (when editing) */}
-              {product && product.images && product.images.length > 0 && (
+              {/* Current Images (only when editing) */}
+              {product && currentImages.length > 0 && (
                 <div className="mt-4">
                   <h4 className="text-sm font-medium text-gray-700 mb-2">الصور الحالية:</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {product.images.map((url, index) => (
-                      <div key={`existing-${index}`} className="relative">
-                        <Image
+                    {currentImages.map((url, index) => (
+                      <div key={`current-${index}`} className="relative">
+                        <OptimizedImage
                           src={url}
-                          alt={`Existing ${index + 1}`}
+                          alt={`Current ${index + 1}`}
                           width={96}
                           height={96}
                           className="w-full h-24 object-cover rounded-lg border"
@@ -316,24 +371,29 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
               {/* New Image Previews */}
               {previewUrls.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">الصور الجديدة:</h4>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">
+                    {product ? 'الصور الجديدة (ستحل محل الصور الحالية):' : 'الصور المرفوعة:'}
+                  </h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {previewUrls.map((url, index) => (
                       <div key={index} className="relative">
-                        <Image
+                        <OptimizedImage
                           src={url}
-                          alt={`Preview ${index + 1}`}
+                          alt={`New ${index + 1}`}
                           width={96}
                           height={96}
-                          className="w-full h-24 object-cover rounded-lg"
+                          className="w-full h-24 object-cover rounded-lg border-2 border-blue-300"
                         />
                         <button
                           type="button"
                           onClick={() => removeImage(index)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                         >
                           ×
                         </button>
+                        <div className="absolute bottom-0 left-0 right-0 bg-blue-500 bg-opacity-75 text-white text-xs text-center py-1">
+                          جديد
+                        </div>
                       </div>
                     ))}
                   </div>

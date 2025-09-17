@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowLeft, Star } from 'lucide-react';
+import Image from 'next/image';
 
 export function HeroSection() {
   return (
@@ -61,8 +62,8 @@ export function HeroSection() {
           {/* Hero Image */}
           <div className="relative">
             <div className="relative z-10">
-              <div className="w-full h-96 lg:h-[500px] bg-gradient-to-br from-primary-200 to-primary-300 rounded-2xl flex items-center justify-center shadow-honey-lg">
-                <div className="text-center">
+              <div className="w-full h-96 lg:h-[500px] bg-gradient-to-br from-primary-200 to-primary-300 rounded-2xl flex items-center justify-center shadow-honey-lg overflow-hidden">
+                <div className="text-center relative">
                   <div className="text-8xl mb-4 animate-float">🍯</div>
                   <div className="text-2xl font-bold text-primary-800">عسل طبيعي خالص</div>
                   <div className="text-primary-600">من جبال الأطلس</div>

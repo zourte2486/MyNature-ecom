@@ -71,11 +71,13 @@ export async function PUT(
       // Keep existing images or use placeholder
       const existingProduct = await supabaseAdmin
         .from('products')
-        .select('image_urls')
+        .select('images, image_urls')
         .eq('id', id)
         .single();
       
-      if (existingProduct.data?.image_urls) {
+      if (existingProduct.data?.images && existingProduct.data.images.length > 0) {
+        imageUrls = existingProduct.data.images;
+      } else if (existingProduct.data?.image_urls && existingProduct.data.image_urls.length > 0) {
         imageUrls = existingProduct.data.image_urls;
       } else {
         imageUrls = ['/images/placeholder-honey.svg'];
@@ -93,7 +95,8 @@ export async function PUT(
         category_id: productData.category_id,
         stock_quantity: productData.stock_quantity,
         image_url: imageUrls[0] || null,  // Store first image in single column
-        image_urls: imageUrls,            // Store all images in array column
+        images: imageUrls,                // Store all images in images array column (frontend uses this)
+        image_urls: imageUrls,            // Store all images in image_urls array column (backup)
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)

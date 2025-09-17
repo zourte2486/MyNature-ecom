@@ -49,11 +49,8 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
         customer_name: data.customer_name,
         customer_email: `${data.customer_name.replace(/\s+/g, '').toLowerCase()}@customer.local`,
         customer_phone: data.customer_phone,
-        shipping_address: {
-          address: data.customer_address,
-          city: data.city,
-          country: 'Morocco'
-        },
+        customer_address: data.customer_address,
+        customer_city: data.city,
         items: [{
           product_id: product.id,
           quantity: quantity,

@@ -20,6 +20,24 @@ export async function getProducts(): Promise<Product[]> {
   return data || [];
 }
 
+// Get all products for admin (including inactive)
+export async function getAdminProducts(): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      *,
+      category:categories(*)
+    `)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching admin products:', error);
+    throw error;
+  }
+
+  return data || [];
+}
+
 // Get product by ID
 export async function getProductById(id: string): Promise<Product | null> {
   const { data, error } = await supabase

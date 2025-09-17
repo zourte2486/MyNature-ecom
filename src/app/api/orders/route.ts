@@ -59,7 +59,8 @@ export async function POST(request: NextRequest) {
       customer_name,
       customer_email,
       customer_phone,
-      shipping_address,
+      customer_address,
+      customer_city,
       items,
       total_amount,
       notes
@@ -79,8 +80,8 @@ export async function POST(request: NextRequest) {
         customer_name,
         customer_email,
         customer_phone,
-        customer_address: shipping_address.address,
-        customer_city: shipping_address.city,
+        customer_address,
+        customer_city,
         total_amount,
         notes,
         status: 'pending'

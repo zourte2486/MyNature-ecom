@@ -20,7 +20,7 @@ export function AdminStats({ orders, products }: AdminStatsProps) {
   const stats = [
     {
       title: 'إجمالي المبيعات',
-      value: totalRevenue.toLocaleString('ar-EG', { style: 'currency', currency: 'MAD' }),
+      value: totalRevenue.toLocaleString('en-US'),
       change: '+12.5%',
       trend: 'up',
       icon: DollarSign,
