@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -154,27 +156,3 @@ export function ProductCard({ product }: ProductCardProps) {
     </div>
   );
 }
-
-
-          )}
-        </div>
-
-        {/* Stock Quantity */}
-        {product.stock_quantity && (
-          <div className="text-xs text-text-secondary mb-3">
-            متوفر: {product.stock_quantity} قطعة
-          </div>
-        )}
-
-        {/* Action Button */}
-        <Link
-          href={`/products/${product.id}`}
-          className="w-full bg-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200 text-center block"
-        >
-          عرض التفاصيل
-        </Link>
-      </div>
-    </div>
-  );
-}
-

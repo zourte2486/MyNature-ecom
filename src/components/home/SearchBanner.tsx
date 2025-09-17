@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export function SearchBanner() {
   const [searchQuery, setSearchQuery] = useState('');
