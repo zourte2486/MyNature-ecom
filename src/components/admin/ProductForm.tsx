@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { X, Upload, Loader2 } from 'lucide-react';
-import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import Image from 'next/image';
 import { Product, Category } from '@/lib/types';
 import { useToast } from '@/components/ui/Toast';
 
@@ -352,7 +352,7 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {currentImages.map((url, index) => (
                       <div key={`current-${index}`} className="relative">
-                        <OptimizedImage
+                        <Image
                           src={url}
                           alt={`Current ${index + 1}`}
                           width={96}
@@ -377,7 +377,7 @@ export function ProductForm({ isOpen, onClose, product, categories, onSave }: Pr
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {previewUrls.map((url, index) => (
                       <div key={index} className="relative">
-                        <OptimizedImage
+                        <Image
                           src={url}
                           alt={`New ${index + 1}`}
                           width={96}

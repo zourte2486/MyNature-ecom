@@ -40,12 +40,13 @@ const nextConfig: NextConfig = {
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 31536000, // 1 year cache
+    minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Add timeout and retry settings
     unoptimized: false,
     loader: 'default',
+    // Add these for better Vercel compatibility
+    domains: ['hc5gzwjnvrhfagdo.public.blob.vercel-storage.com'],
   },
   
   // Headers for better caching
@@ -53,48 +54,6 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/images/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ];
-  },
-};
-
-export default nextConfig;
-
-        pathname: '/**',
-      },
-    ],
-    formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 31536000, // 1 year cache
-    maximumCacheTTL: 31536000, // 1 year cache
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Add timeout and retry settings
-    loader: 'default',
-    unoptimized: false,
-  },
-  
-  // Headers for better caching
-  async headers() {
-    return [
-      {
-        source: '/_next/image(.*)',
         headers: [
           {
             key: 'Cache-Control',

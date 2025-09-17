@@ -1,34 +1,69 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { useState } from 'react';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
-import { OptimizedImage } from '@/components/ui/OptimizedImage';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoading(false);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
+
+  const getImageSrc = () => {
+    if (imageError) return '/images/placeholder-honey.svg';
+    return product.images?.[0] || product.image_urls?.[0] || product.image_url || '/images/placeholder-honey.svg';
+  };
+
+  const hasImages = (product.images && product.images.length > 0) || 
+                   (product.image_urls && product.image_urls.length > 0) || 
+                   product.image_url;
+
   return (
     <div className="group bg-white rounded-xl shadow-honey hover:shadow-honey-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
       {/* Product Image */}
       <div className="relative aspect-square overflow-hidden">
-         {((product.images && product.images.length > 0) || (product.image_urls && product.image_urls.length > 0)) ? (
-          <OptimizedImage
-            src={product.images?.[0] || product.image_urls?.[0] || '/images/placeholder-honey.svg'}
-            alt={product.name_ar}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+        {hasImages ? (
+          <>
+            {imageLoading && (
+              <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            )}
+            <Image
+              src={getImageSrc()}
+              alt={product.name_ar}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={false}
+              quality={75}
+              onError={handleImageError}
+              onLoad={handleImageLoad}
+              unoptimized={false}
+            />
+          </>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-            <OptimizedImage
+            <Image
               src="/images/placeholder-honey.svg"
               alt="Placeholder"
               width={100}
               height={100}
               className="opacity-80"
+              priority={false}
             />
           </div>
         )}

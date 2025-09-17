@@ -1,35 +1,42 @@
-# 🍯 MyNature - Honey & Natural Products E-commerce
+# 🍯 MyNature - Morocco E-commerce Platform
 
-A complete Arabic-first e-commerce platform for Moroccan natural products (honey, argan oil, medicinal herbs, natural oils) built with Next.js 15, Supabase, and modern web technologies.
+A modern, fast, and beautiful e-commerce platform for natural Moroccan products built with Next.js 15, Supabase, and Vercel Blob.
 
 ## ✨ Features
 
-### Public Store
+### 🛍️ E-commerce Features
 
-- **Arabic-first design** with RTL support
-- **Honey-inspired theme** with warm, organic colors
-- **Product catalog** with categories and filtering
-- **Product detail pages** with order forms
-- **Contact and about pages**
-- **Responsive design** for all devices
+- **Product Catalog**: Browse natural honey, argan oil, herbs, and natural oils
+- **Advanced Search**: Real-time search with filters and sorting
+- **Shopping Cart**: Add products and manage quantities
+- **Order Management**: Complete order processing system
+- **Responsive Design**: Mobile-first, beautiful UI/UX
 
-### Admin Dashboard
+### 🔧 Admin Features
 
-- **Product management** (CRUD operations)
-- **Order management** with status tracking
-- **Revenue analytics** with charts
-- **Admin authentication** (Supabase Auth)
-- **Responsive admin interface**
+- **Product Management**: Add, edit, delete products with image uploads
+- **Order Management**: View and manage customer orders
+- **Category Management**: Organize products by categories
+- **Dashboard**: Real-time statistics and analytics
+- **Image Management**: Upload and manage product images with Vercel Blob
 
-### Technical Features
+### 🚀 Technical Features
 
-- **Next.js 15** with App Router
-- **TypeScript** for type safety
-- **Tailwind CSS** for styling
-- **Supabase** for backend (database, auth, storage)
-- **React Hook Form + Zod** for form validation
-- **Recharts** for analytics
-- **Lucide React** for icons
+- **Next.js 15**: Latest React framework with App Router
+- **TypeScript**: Full type safety
+- **Supabase**: Database, authentication, and real-time features
+- **Vercel Blob**: Fast image storage and CDN
+- **Tailwind CSS**: Modern, responsive styling
+- **Performance Optimized**: Fast loading, image optimization, caching
+
+## 🏗️ Tech Stack
+
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS, Lucide React Icons
+- **Database**: Supabase (PostgreSQL)
+- **Storage**: Vercel Blob
+- **Deployment**: Vercel
+- **Forms**: React Hook Form, Zod validation
 
 ## 🚀 Quick Start
 
@@ -38,140 +45,172 @@ A complete Arabic-first e-commerce platform for Moroccan natural products (honey
 - Node.js 18+
 - npm or yarn
 - Supabase account
+- Vercel account (for deployment)
 
-### 1. Install Dependencies
+### 1. Clone the Repository
 
 ```bash
-npm install @supabase/supabase-js @supabase/auth-helpers-nextjs
-npm install react-hook-form @hookform/resolvers zod
-npm install @radix-ui/react-dialog @radix-ui/react-toast @radix-ui/react-dropdown-menu @radix-ui/react-select @radix-ui/react-label @radix-ui/react-slot
-npm install lucide-react recharts
-npm install clsx class-variance-authority tailwind-merge
-npm install @types/uuid uuid
+git clone <repository-url>
+cd morocco-ecommerce
 ```
 
-### 2. Set up Supabase
+### 2. Install Dependencies
 
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to Settings > API to get your project URL and anon key
-3. Create a `.env.local` file in the root directory:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_NAME=MyNature
+```bash
+npm install
 ```
 
-### 3. Set up Database
+### 3. Environment Setup
 
-Run the SQL commands from `database-schema.sql` in your Supabase SQL editor to create the required tables and sample data.
+Copy `.env.example` to `.env.local` and fill in your environment variables:
 
-### 4. Run the Development Server
+```bash
+cp .env.example .env.local
+```
+
+### 4. Database Setup
+
+1. Create a new Supabase project
+2. Run the `database.sql` file in your Supabase SQL Editor
+3. This will create all necessary tables, indexes, and policies
+
+### 5. Vercel Blob Setup
+
+1. Install Vercel Blob: `npm install @vercel/blob`
+2. Get your Vercel Blob token from Vercel dashboard
+3. Add it to your environment variables
+
+### 6. Run Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Visit `http://localhost:3000` to see your application.
 
 ## 📁 Project Structure
 
 ```
 src/
-├── app/                    # Next.js App Router pages
+├── app/                    # Next.js App Router
 │   ├── admin/             # Admin dashboard pages
+│   ├── api/               # API routes
 │   ├── products/          # Product pages
-│   ├── categories/        # Category pages
-│   ├── about/             # About page
-│   ├── contact/           # Contact page
-│   └── layout.tsx         # Root layout
+│   └── globals.css        # Global styles
 ├── components/            # React components
 │   ├── admin/            # Admin-specific components
-│   ├── home/             # Homepage components
+│   ├── home/             # Home page components
 │   ├── layout/           # Layout components
-│   └── products/         # Product components
+│   ├── products/         # Product-related components
+│   └── ui/               # Reusable UI components
 ├── lib/                  # Utility functions
-│   ├── supabase.ts       # Supabase client
-│   ├── types.ts          # TypeScript types
-│   └── utils.ts          # Helper functions
-└── globals.css           # Global styles
+│   ├── supabase/         # Supabase client and functions
+│   └── types.ts          # TypeScript type definitions
+└── public/               # Static assets
 ```
-
-## 🎨 Design System
-
-### Color Palette
-
-- **Primary**: Honey Gold (#f59e0b)
-- **Secondary**: Herbal Green (#059669)
-- **Accent**: Honeycomb Beige (#fef3c7)
-- **Background**: Warm Off-white (#fffdf8)
-- **Surface**: Panel White (#ffffff)
-
-### Typography
-
-- **Arabic**: Cairo, Amiri, Noto Sans Arabic
-- **English**: Inter, Poppins
-- **Numbers**: Always ASCII numerals (1234567890)
-
-### RTL Support
-
-- Full right-to-left layout support
-- Arabic text with proper font families
-- RTL-aware spacing and positioning
 
 ## 🗄️ Database Schema
 
 ### Tables
 
 - **categories**: Product categories
-- **products**: Product information
+- **products**: Product information with images
 - **orders**: Customer orders
 - **order_items**: Order line items
-- **admin_users**: Admin user information
+- **admin_users**: Admin user management
 
 ### Key Features
 
-- UUID primary keys
-- Timestamps for created/updated
-- Row Level Security (RLS) policies
-- Foreign key relationships
-- Indexes for performance
+- **Row Level Security (RLS)**: Secure data access
+- **Indexes**: Optimized for performance
+- **Triggers**: Automatic timestamp updates
+- **Foreign Keys**: Data integrity
 
-## 🔐 Authentication
+## 🔧 Configuration
 
-### Admin Authentication
+### Environment Variables
 
-- Email/password login for admin users
-- Protected admin routes
-- Session management with Supabase Auth
-- Middleware for route protection
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-### Public Access
+# Vercel Blob
+BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
 
-- No authentication required for public pages
-- Order forms work without user accounts
-- Customer information collected per order
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_NAME=MyNature
+```
 
-## 📱 Pages
+### Next.js Configuration
 
-### Public Pages
+- **Image Optimization**: WebP/AVIF formats, responsive sizing
+- **Performance**: CSS optimization, package imports optimization
+- **Caching**: 1-year cache for static assets
+- **Security**: Content Security Policy for images
 
-- `/` - Homepage with hero and featured products
-- `/products` - Product catalog with filtering
-- `/products/[id]` - Product detail with order form
-- `/categories` - Browse by category
-- `/about` - About the brand
-- `/contact` - Contact form
+## 🎨 UI/UX Features
 
-### Admin Pages
+### Design System
 
-- `/admin` - Dashboard with analytics
-- `/admin/products` - Product management
-- `/admin/orders` - Order management
-- `/admin/reports` - Revenue analytics
-- `/admin/settings` - Store settings
+- **Colors**: Honey-themed color palette
+- **Typography**: Arabic and English support
+- **Components**: Reusable, accessible components
+- **Animations**: Smooth transitions and hover effects
+
+### Responsive Design
+
+- **Mobile First**: Optimized for mobile devices
+- **Breakpoints**: sm, md, lg, xl responsive breakpoints
+- **Touch Friendly**: Large touch targets for mobile
+
+## 🚀 Performance Optimizations
+
+### Image Optimization
+
+- **Next.js Image**: Automatic optimization
+- **WebP/AVIF**: Modern image formats
+- **Lazy Loading**: Images load as needed
+- **Responsive Sizes**: Different sizes for different screens
+
+### Code Optimization
+
+- **Tree Shaking**: Remove unused code
+- **Code Splitting**: Load code as needed
+- **Bundle Analysis**: Optimize bundle size
+- **Caching**: Aggressive caching strategy
+
+## 🔒 Security Features
+
+### Authentication
+
+- **Supabase Auth**: Secure authentication
+- **Row Level Security**: Database-level security
+- **Admin Protection**: Admin-only routes
+
+### Data Protection
+
+- **Input Validation**: Zod schema validation
+- **SQL Injection**: Parameterized queries
+- **XSS Protection**: Content Security Policy
+
+## 📱 Admin Dashboard
+
+### Features
+
+- **Product Management**: CRUD operations for products
+- **Order Management**: View and update orders
+- **Image Upload**: Drag-and-drop image uploads
+- **Real-time Updates**: Live data updates
+- **Responsive Design**: Works on all devices
+
+### Access
+
+- Navigate to `/admin` to access the dashboard
+- Use admin credentials to log in
+- All admin functions are protected by authentication
 
 ## 🛠️ Development
 
@@ -182,65 +221,46 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
+npm run type-check   # Run TypeScript checks
 ```
 
-### Code Style
+### Code Quality
 
-- TypeScript for type safety
-- ESLint for code quality
-- Prettier for code formatting
-- Consistent naming conventions
+- **ESLint**: Code linting and formatting
+- **TypeScript**: Type checking
+- **Prettier**: Code formatting
+- **Husky**: Git hooks for quality checks
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Vercel Deployment
 
-1. Push code to GitHub
-2. Connect repository to Vercel
-3. Add environment variables
-4. Deploy automatically
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
 ### Environment Variables for Production
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_production_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_production_service_role_key
-NEXT_PUBLIC_APP_URL=https://your-domain.com
-NEXT_PUBLIC_APP_NAME=MyNature
-```
+Set these in your Vercel dashboard:
 
-## 📊 Performance
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `BLOB_READ_WRITE_TOKEN`
 
-### Optimization Features
+## 📊 Monitoring
 
-- Image optimization with Next.js Image
-- Code splitting and lazy loading
-- CDN delivery for static assets
-- Database query optimization
-- Caching strategies
+### Performance
 
-### Performance Goals
+- **Core Web Vitals**: Optimized for Google's metrics
+- **Lighthouse**: High performance scores
+- **Bundle Size**: Optimized bundle size
 
-- LCP < 2.5s
-- CLS < 0.1
-- FID < 100ms
-- Lighthouse score > 90
+### Analytics
 
-## 🌍 Localization
-
-### Current Support
-
-- **Primary Language**: Arabic (RTL)
-- **Currency**: Moroccan Dirham (MAD)
-- **Numbers**: ASCII numerals only
-- **Dates**: Arabic locale formatting
-
-### Future Enhancements
-
-- French language support
-- Multi-currency support
-- Timezone handling
+- **Vercel Analytics**: Built-in analytics
+- **Custom Events**: Track user interactions
+- **Error Monitoring**: Catch and fix errors
 
 ## 🤝 Contributing
 
@@ -256,8 +276,15 @@ This project is licensed under the MIT License.
 
 ## 🆘 Support
 
-For support, email info@mynature.ma or create an issue in the repository.
+For support, email admin@mynature.com or create an issue in the repository.
+
+## 🙏 Acknowledgments
+
+- **Next.js Team**: For the amazing framework
+- **Supabase Team**: For the backend infrastructure
+- **Vercel Team**: For deployment and storage
+- **Tailwind CSS Team**: For the utility-first CSS framework
 
 ---
 
-Built with ❤️ for Moroccan natural products
+**Built with ❤️ for Morocco's natural products** 🇲🇦

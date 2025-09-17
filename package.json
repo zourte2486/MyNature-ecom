@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next out",
+    "db:setup": "echo 'Run database.sql in your Supabase SQL Editor'",
+    "preview": "next build && next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
