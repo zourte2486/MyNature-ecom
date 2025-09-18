@@ -13,7 +13,7 @@ const orderSchema = z.object({
   customer_name: z.string().min(2, 'الاسم مطلوب'),
   customer_phone: z.string().min(10, 'رقم الهاتف غير صحيح'),
   customer_address: z.string().min(10, 'العنوان مطلوب'),
-  city: z.string().min(2, 'المدينة مطلوبة'),
+  city: z.string().min(2, 'المدينة مطلوبة').max(50, 'اسم المدينة طويل جداً'),
   notes: z.string().optional(),
 });
 
@@ -59,6 +59,14 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
         total_amount: totalPrice,
         notes: data.notes || ''
       };
+
+      console.log('Form data:', data);
+      console.log('Order data being sent:', orderData);
+
+      // Additional validation
+      if (!data.city || data.city.trim() === '') {
+        throw new Error('المدينة مطلوبة');
+      }
       
       // Submit order to API
       const response = await fetch('/api/orders', {
@@ -71,6 +79,7 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('Order creation error:', errorData);
         throw new Error(errorData.error || 'Failed to create order');
       }
 

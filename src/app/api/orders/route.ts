@@ -65,6 +65,8 @@ export async function POST(request: NextRequest) {
   try {
     const orderData = await request.json();
     
+    console.log('Order data received:', orderData);
+    
     const {
       customer_name,
       customer_email,
@@ -83,6 +85,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
+    // Validate city field specifically
+    if (!customer_city || customer_city.trim() === '') {
+      return NextResponse.json({
+        error: 'المدينة مطلوبة'
+      }, { status: 400 });
+    }
+
     // Create order
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
@@ -91,7 +100,7 @@ export async function POST(request: NextRequest) {
         customer_email,
         customer_phone,
         customer_address,
-        city: customer_city, // Map customer_city to city column
+        city: customer_city || 'غير محدد', // Map customer_city to city column with fallback
         total_amount,
         notes,
         status: 'pending'
