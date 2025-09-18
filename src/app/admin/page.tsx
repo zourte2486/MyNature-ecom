@@ -29,7 +29,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <AdminStats orders={orders} products={products} />
+      <AdminStats />
 
       {/* Charts and Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

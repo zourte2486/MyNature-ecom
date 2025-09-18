@@ -24,7 +24,7 @@ interface Order {
   customer_email: string;
   customer_phone?: string;
   customer_address: string;
-  customer_city: string;
+  city: string;
   total_amount: number;
   status: string;
   notes?: string;
@@ -225,13 +225,13 @@ export function OrderManagement({ orders: initialOrders, onRefresh }: OrderManag
                             {order.customer_address}
                           </div>
                           <div className="text-gray-600">
-                            {order.customer_city}, Morocco
+                            {order.city}, Morocco
                           </div>
                         </div>
                         {order.notes && (
-                          <div>
-                            <span className="font-medium">ملاحظات:</span>
-                            <div className="text-gray-600 text-xs">
+                          <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+                            <span className="font-medium text-yellow-800 text-xs">ملاحظات العميل:</span>
+                            <div className="text-yellow-700 text-xs mt-1">
                               {order.notes}
                             </div>
                           </div>

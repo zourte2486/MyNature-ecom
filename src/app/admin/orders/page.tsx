@@ -23,7 +23,7 @@ interface Order {
   customer_email: string;
   customer_phone?: string;
   customer_address: string;
-  customer_city: string;
+  city: string;
   total_amount: number;
   status: string;
   notes?: string;

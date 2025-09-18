@@ -11,7 +11,17 @@ export async function GET(request: NextRequest) {
     let query = supabaseAdmin
       .from('orders')
       .select(`
-        *,
+        id,
+        customer_name,
+        customer_email,
+        customer_phone,
+        customer_address,
+        city,
+        total_amount,
+        status,
+        notes,
+        created_at,
+        updated_at,
         order_items:order_items(
           *,
           product:products(
@@ -81,7 +91,7 @@ export async function POST(request: NextRequest) {
         customer_email,
         customer_phone,
         customer_address,
-        customer_city,
+        city: customer_city, // Map customer_city to city column
         total_amount,
         notes,
         status: 'pending'

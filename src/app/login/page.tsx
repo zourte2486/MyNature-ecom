@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -11,6 +10,27 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Check if already logged in
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      const response = await fetch('/api/auth/session');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.authenticated) {
+          const redirectTo = searchParams.get('redirect') || '/admin';
+          router.push(redirectTo);
+        }
+      }
+    } catch (error) {
+      console.error('Session check error:', error);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,37 +38,24 @@ export default function Login() {
     setError('');
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        setError('خطأ في تسجيل الدخول: ' + error.message);
-        return;
-      }
+      const data = await response.json();
 
-      if (data.user) {
-        // Check if user is admin
-        const { data: adminUser, error: adminError } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-
-        if (adminError) {
-          console.error('Admin query error:', adminError);
-          setError('خطأ في التحقق من الصلاحيات: ' + adminError.message);
-          await supabase.auth.signOut();
-        } else if (adminUser) {
-          router.push('/admin');
-        } else {
-          setError('ليس لديك صلاحية للوصول إلى لوحة الإدارة');
-          await supabase.auth.signOut();
-        }
+      if (data.success) {
+        const redirectTo = searchParams.get('redirect') || '/admin';
+        router.push(redirectTo);
+      } else {
+        setError(data.error || 'خطأ في تسجيل الدخول');
       }
-    } catch {
-      setError('حدث خطأ غير متوقع');
+    } catch (error) {
+      setError('حدث خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);
     }

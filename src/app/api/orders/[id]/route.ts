@@ -11,14 +11,24 @@ export async function GET(
     const { data: order, error } = await supabaseAdmin
       .from('orders')
       .select(`
-        *,
+        id,
+        customer_name,
+        customer_email,
+        customer_phone,
+        customer_address,
+        city,
+        total_amount,
+        status,
+        notes,
+        created_at,
+        updated_at,
         order_items:order_items(
           *,
           product:products(
             id,
             name_ar,
             price,
-            image_urls
+            images
           )
         )
       `)
