@@ -5,7 +5,7 @@ import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
 import { ToastProvider } from "@/components/ui/Toast";
 
 const inter = Inter({
-  subsets: ["latin", "arabic"],
+  subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
   preload: true,

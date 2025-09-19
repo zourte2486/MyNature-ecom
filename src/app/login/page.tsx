@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function Login() {
+function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,12 +12,7 @@ export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Check if already logged in
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/session');
       if (response.ok) {
@@ -30,7 +25,12 @@ export default function Login() {
     } catch (error) {
       console.error('Session check error:', error);
     }
-  };
+  }, [searchParams, router]);
+
+  // Check if already logged in
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ export default function Login() {
       } else {
         setError(data.error || 'خطأ في تسجيل الدخول');
       }
-    } catch (error) {
+    } catch {
       setError('حدث خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);
@@ -125,5 +125,20 @@ export default function Login() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

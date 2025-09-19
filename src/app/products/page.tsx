@@ -134,7 +134,7 @@ export default function ProductsPage() {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(product =>
         product.name_ar.toLowerCase().includes(searchLower) ||
-        product.description_ar.toLowerCase().includes(searchLower) ||
+        (product.description_ar && product.description_ar.toLowerCase().includes(searchLower)) ||
         product.tags?.some(tag => tag.toLowerCase().includes(searchLower))
       );
     }
@@ -240,7 +240,7 @@ export default function ProductsPage() {
                 {/* Sort Dropdown */}
                 <select 
                   value={filters.sortBy}
-                  onChange={(e) => handleFilterChange({ sortBy: e.target.value as any })}
+                  onChange={(e) => handleFilterChange({ sortBy: e.target.value as 'name' | 'price-low' | 'price-high' | 'newest' })}
                   className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-300"
                 >
                   <option value="newest">الأحدث</option>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ShoppingCart, Heart, Search, User, ChevronDown } from 'lucide-react';
+import { Menu, X, ShoppingCart, Heart, Search, User } from 'lucide-react';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

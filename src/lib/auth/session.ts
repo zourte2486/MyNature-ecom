@@ -40,9 +40,9 @@ export function getSessionFromRequest(request: NextRequest): AdminSession | null
   }
 }
 
-export function getSessionFromCookies(): AdminSession | null {
+export async function getSessionFromCookies(): Promise<AdminSession | null> {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
     if (!sessionCookie) return null;
 
