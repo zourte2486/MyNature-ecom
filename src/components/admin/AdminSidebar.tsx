@@ -26,14 +26,14 @@ export function AdminSidebar() {
   return (
     <div className="w-64 bg-white shadow-lg h-screen">
       {/* Logo */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-slate-200">
         <Link href="/admin" className="flex items-center space-x-2 rtl:space-x-reverse">
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-sm">🍯</span>
+          <div className="w-8 h-8 bg-gradient-to-br from-teal-600 to-emerald-700 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-sm">🌿</span>
           </div>
           <div>
-            <div className="text-lg font-bold text-text-primary">MyNature</div>
-            <div className="text-xs text-text-secondary">Admin Panel</div>
+            <div className="text-lg font-bold text-slate-900">MyNature</div>
+            <div className="text-xs text-slate-600">Admin Panel</div>
           </div>
         </Link>
       </div>
@@ -43,7 +43,7 @@ export function AdminSidebar() {
         <div className="px-3">
           <Link
             href="/"
-            className="flex items-center px-3 py-2 text-sm text-text-secondary hover:text-primary hover:bg-primary/10 rounded-lg mb-2"
+            className="flex items-center px-3 py-2 text-sm text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg mb-2"
           >
             <Home className="w-5 h-5 ml-3" />
             العودة للموقع
@@ -59,8 +59,8 @@ export function AdminSidebar() {
                 href={item.href}
                 className={`flex items-center px-3 py-2 text-sm rounded-lg mb-1 ${
                   isActive
-                    ? 'bg-primary text-white'
-                    : 'text-text-secondary hover:text-primary hover:bg-primary/10'
+                    ? 'bg-teal-600 text-white'
+                    : 'text-slate-600 hover:text-teal-600 hover:bg-teal-50'
                 }`}
               >
                 <item.icon className="w-5 h-5 ml-3" />
@@ -72,16 +72,16 @@ export function AdminSidebar() {
       </nav>
 
       {/* User Info */}
-      <div className="absolute bottom-0 w-64 p-4 border-t border-gray-200">
+      <div className="absolute bottom-0 w-64 p-4 border-t border-slate-200">
         <div className="flex items-center space-x-3 rtl:space-x-reverse">
-          <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+          <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
             <span className="text-sm font-medium">أ</span>
           </div>
           <div className="flex-1">
-            <div className="text-sm font-medium text-text-primary">Admin User</div>
-            <div className="text-xs text-text-secondary">admin@mynature.ma</div>
+            <div className="text-sm font-medium text-slate-900">Admin User</div>
+            <div className="text-xs text-slate-600">admin@mynature.ma</div>
           </div>
-          <button className="text-text-secondary hover:text-red-500">
+          <button className="text-slate-600 hover:text-red-500">
             <LogOut className="w-4 h-4" />
           </button>
         </div>

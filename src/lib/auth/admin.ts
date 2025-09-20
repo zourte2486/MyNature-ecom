@@ -33,13 +33,13 @@ export async function authenticateAdmin(credentials: AdminCredentials): Promise<
       };
     }
 
-    // For now, we'll use a simple password check
-    // In production, you should hash passwords and use proper authentication
-    const { data: adminWithPassword } = await supabaseAdmin
-      .from('admin_users')
-      .select('password_hash')
-      .eq('id', admin.id)
-      .single();
+        // For now, we'll use a simple password check
+        // In production, you should hash passwords and use proper authentication
+        const { data: adminWithPassword } = await supabaseAdmin
+          .from('admin_users')
+          .select('password_hash')
+          .eq('id', admin.id)
+          .single();
 
     // Simple password validation (replace with proper hashing in production)
     if (adminWithPassword?.password_hash !== credentials.password) {

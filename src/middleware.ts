@@ -4,13 +4,13 @@ import { getSessionFromRequest } from '@/lib/auth/session';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Skip middleware for login pages
+  if (pathname === '/login' || pathname === '/admin/login') {
+    return NextResponse.next();
+  }
+
   // Check if the request is for an admin route
   if (pathname.startsWith('/admin')) {
-    // Skip middleware for login page
-    if (pathname === '/login') {
-      return NextResponse.next();
-    }
-
     // Check for valid admin session
     const session = getSessionFromRequest(request);
     
@@ -33,6 +33,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/admin/:path*',
-    '/login'
+    '/login',
+    '/admin/login'
   ]
 };
