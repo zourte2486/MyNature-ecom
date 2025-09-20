@@ -180,33 +180,33 @@ export default function ProductsPage() {
   }, [products, filters]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-teal-50 via-emerald-50 to-green-50 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-              منتجاتنا الطبيعية
-            </h1>
-            <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto">
-              اكتشف مجموعة واسعة من المنتجات الطبيعية الأصيلة من قلب الطبيعة المغربية
-            </p>
+      <div className="min-h-screen bg-amber-50">
+        {/* Hero Section */}
+        <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-8 sm:py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-900 mb-4">
+                منتجاتنا الطبيعية
+              </h1>
+              <p className="text-lg sm:text-xl text-amber-700 max-w-3xl mx-auto">
+                اكتشف مجموعة واسعة من العسل والمنتجات الطبيعية الأصيلة من قلب الطبيعة المغربية
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Mobile Filter Toggle */}
           <div className="lg:hidden">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
-            >
-              <Filter className="w-5 h-5" />
-              <span className="font-medium">تصفية المنتجات</span>
-              <SortAsc className="w-4 h-4" />
-            </button>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-amber-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <Filter className="w-5 h-5" />
+                <span className="font-medium">تصفية المنتجات</span>
+                <SortAsc className="w-4 h-4" />
+              </button>
           </div>
 
           {/* Filters Sidebar */}
@@ -226,22 +226,22 @@ export default function ProductsPage() {
             <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 {/* Search Bar */}
-                <div className="flex-1 relative">
-                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="ابحث عن منتج..."
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange({ search: e.target.value })}
-                    className="w-full pr-10 pl-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-slate-50 focus:bg-white transition-all duration-300"
-                  />
-                </div>
+                  <div className="flex-1 relative">
+                    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      placeholder="ابحث عن عسل..."
+                      value={filters.search}
+                      onChange={(e) => handleFilterChange({ search: e.target.value })}
+                      className="w-full pr-10 pl-4 py-3 border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-amber-50 focus:bg-white transition-all duration-300"
+                    />
+                  </div>
 
                 {/* Sort Dropdown */}
                 <select 
                   value={filters.sortBy}
                   onChange={(e) => handleFilterChange({ sortBy: e.target.value as 'name' | 'price-low' | 'price-high' | 'newest' })}
-                  className="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-slate-50 focus:bg-white transition-all duration-300"
+                  className="px-4 py-3 border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-amber-50 focus:bg-white transition-all duration-300"
                 >
                   <option value="newest">الأحدث</option>
                   <option value="name">ترتيب حسب الاسم</option>
@@ -250,34 +250,34 @@ export default function ProductsPage() {
                 </select>
 
                 {/* View Mode Toggle */}
-                <div className="flex border border-slate-200 rounded-xl overflow-hidden">
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-3 transition-all duration-300 ${
-                      viewMode === 'grid' 
-                        ? 'bg-teal-500 text-white' 
-                        : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Grid className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-3 transition-all duration-300 ${
-                      viewMode === 'list' 
-                        ? 'bg-teal-500 text-white' 
-                        : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    <List className="w-5 h-5" />
-                  </button>
-                </div>
+                  <div className="flex border border-amber-200 rounded-xl overflow-hidden">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-3 transition-all duration-300 ${
+                        viewMode === 'grid' 
+                          ? 'bg-amber-500 text-white' 
+                          : 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                      }`}
+                    >
+                      <Grid className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-3 transition-all duration-300 ${
+                        viewMode === 'list' 
+                          ? 'bg-amber-500 text-white' 
+                          : 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                      }`}
+                    >
+                      <List className="w-5 h-5" />
+                    </button>
+                  </div>
 
                 {/* Refresh Button */}
                 <button
                   onClick={handleRefresh}
                   disabled={loading}
-                  className="p-3 text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300 disabled:opacity-50"
+                  className="p-3 text-amber-600 hover:bg-amber-50 rounded-xl transition-all duration-300 disabled:opacity-50"
                   title="تحديث"
                 >
                   <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
@@ -285,9 +285,9 @@ export default function ProductsPage() {
               </div>
 
               {/* Results Count */}
-              <div className="mt-4 pt-4 border-t border-slate-100">
-                <p className="text-slate-600">
-                  عرض <span className="font-bold text-teal-600">{filteredProducts.length}</span> منتج
+              <div className="mt-4 pt-4 border-t border-amber-100">
+                <p className="text-amber-700">
+                  عرض <span className="font-bold text-amber-600">{filteredProducts.length}</span> منتج
                   {filters.search && ` من "${filters.search}"`}
                 </p>
               </div>
@@ -301,7 +301,7 @@ export default function ProductsPage() {
                   <p className="text-red-600 mb-4">{error}</p>
                   <button
                     onClick={handleRefresh}
-                    className="px-6 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 transition-all duration-300 font-medium"
+                    className="px-6 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-all duration-300 font-medium"
                   >
                     إعادة المحاولة
                   </button>
@@ -312,8 +312,8 @@ export default function ProductsPage() {
             {/* Loading State */}
             {loading && !error && (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
-                <span className="mr-3 text-slate-600 font-medium">جاري تحميل المنتجات...</span>
+                <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+                <span className="mr-3 text-amber-700 font-medium">جاري تحميل المنتجات...</span>
               </div>
             )}
 
@@ -322,14 +322,14 @@ export default function ProductsPage() {
               <>
                 {filteredProducts.length === 0 ? (
                   <div className="text-center py-12">
-                    <div className="text-6xl mb-4">🔍</div>
-                    <p className="text-slate-600 text-lg mb-4">
-                      {filters.search ? 'لم يتم العثور على منتجات تطابق البحث' : 'لا توجد منتجات متاحة'}
+                    <div className="text-6xl mb-4">🍯</div>
+                    <p className="text-amber-700 text-lg mb-4">
+                      {filters.search ? 'لم يتم العثور على عسل يطابق البحث' : 'لا توجد منتجات متاحة'}
                     </p>
                     {filters.search && (
                       <button
                         onClick={() => handleFilterChange({ search: '' })}
-                        className="text-teal-600 hover:text-teal-700 font-medium"
+                        className="text-amber-600 hover:text-amber-700 font-medium"
                       >
                         مسح البحث
                       </button>

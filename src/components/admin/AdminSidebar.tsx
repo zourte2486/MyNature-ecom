@@ -24,26 +24,26 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-white shadow-lg h-screen">
-      {/* Logo */}
-      <div className="p-6 border-b border-slate-200">
-        <Link href="/admin" className="flex items-center space-x-2 rtl:space-x-reverse">
-          <div className="w-8 h-8 bg-gradient-to-br from-teal-600 to-emerald-700 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-sm">🌿</span>
+        <div className="w-64 bg-amber-50 shadow-lg h-screen">
+          {/* Logo */}
+          <div className="p-6 border-b border-amber-200">
+            <Link href="/admin" className="flex items-center space-x-2 rtl:space-x-reverse">
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">🍯</span>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-amber-900">MyNature</div>
+                <div className="text-xs text-amber-700">Admin Panel</div>
+              </div>
+            </Link>
           </div>
-          <div>
-            <div className="text-lg font-bold text-slate-900">MyNature</div>
-            <div className="text-xs text-slate-600">Admin Panel</div>
-          </div>
-        </Link>
-      </div>
 
       {/* Navigation */}
       <nav className="mt-6">
         <div className="px-3">
           <Link
             href="/"
-            className="flex items-center px-3 py-2 text-sm text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg mb-2"
+            className="flex items-center px-3 py-2 text-sm text-amber-700 hover:text-amber-600 hover:bg-amber-100 rounded-lg mb-2"
           >
             <Home className="w-5 h-5 ml-3" />
             العودة للموقع
@@ -54,15 +54,15 @@ export function AdminSidebar() {
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center px-3 py-2 text-sm rounded-lg mb-1 ${
-                  isActive
-                    ? 'bg-teal-600 text-white'
-                    : 'text-slate-600 hover:text-teal-600 hover:bg-teal-50'
-                }`}
-              >
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex items-center px-3 py-2 text-sm rounded-lg mb-1 ${
+                isActive
+                  ? 'bg-amber-600 text-white'
+                  : 'text-amber-700 hover:text-amber-600 hover:bg-amber-100'
+              }`}
+            >
                 <item.icon className="w-5 h-5 ml-3" />
                 {item.name}
               </Link>
@@ -71,21 +71,21 @@ export function AdminSidebar() {
         </div>
       </nav>
 
-      {/* User Info */}
-      <div className="absolute bottom-0 w-64 p-4 border-t border-slate-200">
-        <div className="flex items-center space-x-3 rtl:space-x-reverse">
-          <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium">أ</span>
+          {/* User Info */}
+          <div className="absolute bottom-0 w-64 p-4 border-t border-amber-200">
+            <div className="flex items-center space-x-3 rtl:space-x-reverse">
+              <div className="w-8 h-8 bg-amber-300 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-amber-800">أ</span>
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-medium text-amber-900">Admin User</div>
+                <div className="text-xs text-amber-700">admin@mynature.ma</div>
+              </div>
+              <button className="text-amber-700 hover:text-red-500">
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-          <div className="flex-1">
-            <div className="text-sm font-medium text-slate-900">Admin User</div>
-            <div className="text-xs text-slate-600">admin@mynature.ma</div>
-          </div>
-          <button className="text-slate-600 hover:text-red-500">
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
