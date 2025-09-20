@@ -20,7 +20,10 @@ function LoginForm() {
           const data = await response.json();
           if (data.authenticated) {
             const redirectTo = searchParams.get('redirect') || '/admin';
-            window.location.href = redirectTo;
+            // Use a more reliable redirect method
+            setTimeout(() => {
+              window.location.replace(redirectTo);
+            }, 100);
           }
         }
       } catch (error) {
@@ -29,7 +32,7 @@ function LoginForm() {
     };
     
     checkSession();
-  }, [searchParams]); // Include searchParams in dependencies
+  }, [searchParams]); // Include searchParams but use useCallback to prevent re-runs
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,14 +50,16 @@ function LoginForm() {
 
       const data = await response.json();
 
-      if (data.success) {
-        // Force redirect using window.location to prevent Fast Refresh issues
-        const redirectTo = searchParams.get('redirect') || '/admin';
-        window.location.href = redirectTo;
-      } else {
-        setError(data.error || 'خطأ في تسجيل الدخول');
-        setLoading(false);
-      }
+          if (data.success) {
+            // Force redirect using window.location.replace to prevent back button issues
+            const redirectTo = searchParams.get('redirect') || '/admin';
+            setTimeout(() => {
+              window.location.replace(redirectTo);
+            }, 100);
+          } else {
+            setError(data.error || 'خطأ في تسجيل الدخول');
+            setLoading(false);
+          }
     } catch (error) {
       console.error('Login error:', error);
       setError('حدث خطأ في الاتصال بالخادم');

@@ -30,10 +30,23 @@ export function isSessionValid(session: AdminSession | null): boolean {
 export function getSessionFromRequest(request: NextRequest): AdminSession | null {
   try {
     const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
-    if (!sessionCookie) return null;
+    if (!sessionCookie) {
+      console.log('No session cookie found');
+      return null;
+    }
 
     const session = JSON.parse(sessionCookie.value) as AdminSession;
-    return isSessionValid(session) ? session : null;
+    const isValid = isSessionValid(session);
+    
+    if (!isValid) {
+      console.log('Session expired or invalid:', {
+        expiresAt: session.expiresAt,
+        currentTime: Date.now(),
+        timeRemaining: session.expiresAt - Date.now()
+      });
+    }
+    
+    return isValid ? session : null;
   } catch (error) {
     console.error('Error parsing session cookie:', error);
     return null;
