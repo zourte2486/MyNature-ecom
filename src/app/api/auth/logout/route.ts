@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { clearSessionCookie } from '@/lib/auth/session';
 
 export async function POST() {
   try {
@@ -10,7 +9,9 @@ export async function POST() {
     });
 
     // Clear session cookie
-    response.headers.set('Set-Cookie', clearSessionCookie());
+    response.headers.set('Set-Cookie', 
+      'admin_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    );
 
     return response;
 

@@ -11,28 +11,7 @@ function LoginForm() {
   const [error, setError] = useState('');
   const searchParams = useSearchParams();
 
-  // Check if already logged in (only once on mount)
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await fetch('/api/auth/session');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.authenticated) {
-            const redirectTo = searchParams.get('redirect') || '/admin';
-            // Use a more reliable redirect method
-            setTimeout(() => {
-              window.location.replace(redirectTo);
-            }, 100);
-          }
-        }
-      } catch (error) {
-        console.error('Session check error:', error);
-      }
-    };
-    
-    checkSession();
-  }, [searchParams]); // Include searchParams but use useCallback to prevent re-runs
+  // No automatic session check to prevent loops
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

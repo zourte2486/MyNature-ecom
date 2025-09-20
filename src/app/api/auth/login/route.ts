@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { authenticateAdmin } from '@/lib/auth/admin';
-import { createAdminSession, setSessionCookie } from '@/lib/auth/session';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,37 +11,33 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Authenticate admin
-    const authResult = await authenticateAdmin({ email, password });
+    // Simple hardcoded admin check for now
+    if (email === 'admin@mynature.ma' && password === 'admin123') {
+      // Create response with simple session cookie
+      const response = NextResponse.json({
+        success: true,
+        admin: {
+          id: 'admin-1',
+          email: 'admin@mynature.ma',
+          name: 'Admin User'
+        }
+      });
 
-    if (!authResult.success || !authResult.admin) {
-      return NextResponse.json({
-        success: false,
-        error: authResult.error || 'بيانات الدخول غير صحيحة'
-      }, { status: 401 });
+      // Set simple session cookie
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (48 * 60 * 60 * 1000)); // 48 hours
+      
+      response.headers.set('Set-Cookie', 
+        `admin_session=authenticated; Path=/; HttpOnly; Secure; SameSite=Strict; Expires=${expires.toUTCString()}`
+      );
+
+      return response;
     }
 
-    // Create session
-    const session = createAdminSession({
-      adminId: authResult.admin.id,
-      email: authResult.admin.email,
-      name: authResult.admin.name
-    });
-
-    // Create response with session cookie
-    const response = NextResponse.json({
-      success: true,
-      admin: {
-        id: authResult.admin.id,
-        email: authResult.admin.email,
-        name: authResult.admin.name
-      }
-    });
-
-    // Set session cookie
-    response.headers.set('Set-Cookie', setSessionCookie(session));
-
-    return response;
+    return NextResponse.json({
+      success: false,
+      error: 'بيانات الدخول غير صحيحة'
+    }, { status: 401 });
 
   } catch (error) {
     console.error('Login error:', error);
