@@ -4,8 +4,10 @@ import { ProductCard } from '@/components/products/ProductCard';
 import { HeroSection } from '@/components/home/HeroSection';
 import { FeaturesSection } from '@/components/home/FeaturesSection';
 import { SearchBanner } from '@/components/home/SearchBanner';
+import { LazyWrapper } from '@/components/ui/LazyWrapper';
 import { getFeaturedProducts } from '@/lib/supabase/products';
 import { Product } from '@/lib/types';
+import { Suspense } from 'react';
 
 export default async function Home() {
   // Fetch featured products from Supabase
@@ -32,24 +34,34 @@ export default async function Home() {
       <section className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text-primary mb-4">
+            <h2 className="text-3xl font-bold text-orange-900 mb-4">
               منتجاتنا المميزة
             </h2>
-            <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+            <p className="text-lg text-orange-700 max-w-2xl mx-auto">
               اكتشف أجود أنواع العسل والمنتجات الطبيعية المغربية الأصيلة
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <Suspense fallback={
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              {[...Array(8)].map((_, i) => (
+                <LazyWrapper key={i} className="h-80">
+                  <div className="animate-pulse bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg h-80"></div>
+                </LazyWrapper>
+              ))}
+            </div>
+          }>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </Suspense>
 
           <div className="text-center">
             <Link
               href="/products"
-              className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-colors duration-200"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               عرض جميع المنتجات
               <ArrowLeft className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2" />

@@ -1,7 +1,9 @@
 import { ProductManagement } from '@/components/admin/ProductManagement';
+import { AdminTableSkeleton } from '@/components/admin/AdminSkeleton';
 import { getAdminProducts } from '@/lib/supabase/products';
 import { getCategories } from '@/lib/supabase/categories';
 import { Product, Category } from '@/lib/types';
+import { Suspense } from 'react';
 
 export default async function AdminProductsPage() {
   // Fetch data from Supabase
@@ -26,7 +28,9 @@ export default async function AdminProductsPage() {
       </div>
 
       {/* Product Management Component */}
-      <ProductManagement products={products} categories={categories} />
+      <Suspense fallback={<AdminTableSkeleton />}>
+        <ProductManagement products={products} categories={categories} />
+      </Suspense>
     </div>
   );
 }

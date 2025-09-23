@@ -57,10 +57,11 @@ export function AdminSidebar() {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center px-3 py-2 text-sm rounded-lg mb-1 ${
+              prefetch={true}
+              className={`flex items-center px-3 py-2 text-sm rounded-lg mb-1 transition-all duration-200 ${
                 isActive
-                  ? 'bg-amber-600 text-white'
-                  : 'text-amber-700 hover:text-amber-600 hover:bg-amber-100'
+                  ? 'bg-amber-600 text-white shadow-sm'
+                  : 'text-amber-700 hover:text-amber-600 hover:bg-amber-100 hover:shadow-sm'
               }`}
             >
                 <item.icon className="w-5 h-5 ml-3" />

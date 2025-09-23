@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip middleware for login pages, API routes, and static files
@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
 
   // Only protect admin routes
   if (pathname.startsWith('/admin')) {
-    // Simple check for admin session cookie
+    // Check for admin session cookie
     const adminSession = request.cookies.get('admin_session');
     
     if (!adminSession) {
@@ -26,7 +26,8 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    // If session exists, allow access
+    // For now, just check if cookie exists (simplified validation)
+    // In production, you might want to add more validation
     return NextResponse.next();
   }
 

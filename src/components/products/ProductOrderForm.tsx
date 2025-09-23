@@ -227,14 +227,14 @@ export function ProductOrderForm({ product }: ProductOrderFormProps) {
         </div>
 
         {/* Total Price */}
-        <div className="bg-accent rounded-lg p-4">
+        <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
           <div className="flex items-center justify-between">
-            <span className="text-lg font-medium text-text-primary">المجموع:</span>
-            <span className="text-2xl font-bold text-primary price">
+            <span className="text-lg font-medium text-orange-900">المجموع:</span>
+            <span className="text-2xl font-bold text-orange-600 price">
               {formatPrice(totalPrice)}
             </span>
           </div>
-          <p className="text-sm text-text-secondary mt-1">
+          <p className="text-sm text-orange-700 mt-1">
             {quantity} × {formatPrice(product.price)}
           </p>
         </div>

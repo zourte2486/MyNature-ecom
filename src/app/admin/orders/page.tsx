@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { OrderManagement } from '@/components/admin/OrderManagement';
+import { AdminTableSkeleton } from '@/components/admin/AdminSkeleton';
 
 
 interface OrderItem {
@@ -123,7 +124,9 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Order Management Component */}
-      <OrderManagement orders={orders} onRefresh={fetchOrders} />
+      <Suspense fallback={<AdminTableSkeleton />}>
+        <OrderManagement orders={orders} onRefresh={fetchOrders} />
+      </Suspense>
     </div>
   );
 }

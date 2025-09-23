@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,33 +17,52 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Simple hardcoded admin check for now
-    if (email === 'admin@mynature.ma' && password === 'admin123') {
-      // Create response with simple session cookie
-      const response = NextResponse.json({
-        success: true,
-        admin: {
-          id: 'admin-1',
-          email: 'admin@mynature.ma',
-          name: 'Admin User'
-        }
-      });
+    // Check admin user in database
+    const { data: admin, error } = await supabase
+      .from('admin_users')
+      .select('id, email, name, password_hash, is_active')
+      .eq('email', email)
+      .eq('is_active', true)
+      .single();
 
-      // Set simple session cookie
-      const expires = new Date();
-      expires.setTime(expires.getTime() + (48 * 60 * 60 * 1000)); // 48 hours
-      
-      response.headers.set('Set-Cookie', 
-        `admin_session=authenticated; Path=/; HttpOnly; Secure; SameSite=Strict; Expires=${expires.toUTCString()}`
-      );
-
-      return response;
+    if (error || !admin) {
+      return NextResponse.json({
+        success: false,
+        error: 'بيانات الدخول غير صحيحة'
+      }, { status: 401 });
     }
 
-    return NextResponse.json({
-      success: false,
-      error: 'بيانات الدخول غير صحيحة'
-    }, { status: 401 });
+    // Simple password check (in production, use proper hashing)
+    if (admin.password_hash !== password) {
+      return NextResponse.json({
+        success: false,
+        error: 'بيانات الدخول غير صحيحة'
+      }, { status: 401 });
+    }
+
+    // Create response with session cookie
+    const response = NextResponse.json({
+      success: true,
+      admin: {
+        id: admin.id,
+        email: admin.email,
+        name: admin.name
+      }
+    });
+
+    // Set session cookie (48 hours)
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (48 * 60 * 60 * 1000));
+    
+    // Use Secure only in production (not on localhost)
+    const isProduction = process.env.NODE_ENV === 'production';
+    const secureFlag = isProduction ? 'Secure; ' : '';
+    
+    response.headers.set('Set-Cookie', 
+      `admin_session=${admin.id}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Expires=${expires.toUTCString()}`
+    );
+
+    return response;
 
   } catch (error) {
     console.error('Login error:', error);

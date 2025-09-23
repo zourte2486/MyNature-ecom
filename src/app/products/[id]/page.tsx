@@ -150,9 +150,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   <Truck className="w-5 h-5 text-primary" />
                   <span className="text-sm text-text-secondary">توصيل سريع</span>
                 </div>
-                <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                  <span className="text-sm text-text-secondary">المنشأ: {product.origin}</span>
-                </div>
               </div>
             </div>
 
@@ -197,36 +194,33 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {/* Related Products */}
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-text-primary mb-8">منتجات ذات صلة</h2>
+          <h2 className="text-2xl font-bold text-orange-900 mb-8">منتجات ذات صلة</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedProducts.map((product) => (
-              <div key={product.id} className="bg-white rounded-xl shadow-honey p-4 hover:shadow-honey-lg transition-shadow">
-                <div className="aspect-square bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg mb-4 flex items-center justify-center">
+              <div key={product.id} className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow border border-orange-100">
+                <div className="relative aspect-square bg-gradient-to-br from-amber-100 to-orange-200 rounded-lg mb-4 overflow-hidden">
                   {(product.image_urls && product.image_urls.length > 0) ? (
                     <Image
                       src={product.image_urls[0]}
                       alt={product.name_ar}
-                      width={80}
-                      height={80}
+                      fill
                       className="object-cover rounded-lg"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+                      quality={85}
                     />
                   ) : (
-                    <Image
-                      src="/images/placeholder-honey.svg"
-                      alt="Placeholder"
-                      width={80}
-                      height={80}
-                      className="opacity-80"
-                    />
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-4xl opacity-60">🍯</div>
+                    </div>
                   )}
                 </div>
-                <h3 className="font-semibold text-text-primary mb-2">{product.name_ar}</h3>
-                <p className="text-sm text-text-secondary mb-3">{product.description_ar}</p>
+                <h3 className="font-semibold text-orange-900 mb-2">{product.name_ar}</h3>
+                <p className="text-sm text-orange-700 mb-3">{product.description_ar}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-primary price">{formatPrice(product.price)}</span>
+                  <span className="text-lg font-bold text-orange-600 price">{formatPrice(product.price)}</span>
                   <Link
                     href={`/products/${product.id}`}
-                    className="text-primary hover:text-primary-dark text-sm font-medium"
+                    className="text-orange-600 hover:text-orange-700 text-sm font-medium"
                   >
                     عرض التفاصيل
                   </Link>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -28,17 +28,19 @@ function LoginForm() {
       });
 
       const data = await response.json();
+      console.log('Login response:', data);
 
-          if (data.success) {
-            // Force redirect using window.location.replace to prevent back button issues
-            const redirectTo = searchParams.get('redirect') || '/admin';
-            setTimeout(() => {
-              window.location.replace(redirectTo);
-            }, 100);
-          } else {
-            setError(data.error || 'خطأ في تسجيل الدخول');
-            setLoading(false);
-          }
+      if (data.success) {
+        // Force redirect using window.location.replace to prevent back button issues
+        const redirectTo = searchParams.get('redirect') || '/admin';
+        console.log('Redirecting to:', redirectTo);
+        setTimeout(() => {
+          window.location.replace(redirectTo);
+        }, 100);
+      } else {
+        setError(data.error || 'خطأ في تسجيل الدخول');
+        setLoading(false);
+      }
     } catch (error) {
       console.error('Login error:', error);
       setError('حدث خطأ في الاتصال بالخادم');
