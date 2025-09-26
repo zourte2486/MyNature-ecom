@@ -1,41 +1,43 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
+  // Get the pathname of the request
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for login pages, API routes, and static files
+  // Skip middleware for public routes
   if (
-    pathname === '/login' || 
-    pathname === '/admin/login' || 
-    pathname.startsWith('/api/') ||
     pathname.startsWith('/_next/') ||
+    pathname.startsWith('/api/') ||
+    pathname === '/admin/login' ||
+    pathname === '/login' ||
     pathname.includes('.')
   ) {
     return NextResponse.next();
   }
 
-  // Only protect admin routes
+  // Check for admin routes
   if (pathname.startsWith('/admin')) {
     // Check for admin session cookie
-    const adminSession = request.cookies.get('admin_session');
-    
-    if (!adminSession) {
-      // Redirect to login if no session cookie
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
+    const adminSession = request.cookies.get('admin-session');
 
-    // For now, just check if cookie exists (simplified validation)
-    // In production, you might want to add more validation
-    return NextResponse.next();
+    if (!adminSession?.value) {
+      // Redirect to login if no session
+      const url = new URL('/admin/login', request.url);
+      url.searchParams.set('from', pathname);
+      return NextResponse.redirect(url);
+    }
   }
 
   return NextResponse.next();
 }
 
+// Specify paths to apply middleware to
 export const config = {
   matcher: [
-    '/admin/:path*'
-  ]
+    // Match all admin routes except login
+    '/admin/:path*',
+    // Skip middleware for assets, api, and login
+    '/((?!api|_next/static|_next/image|favicon.ico|login).*)',
+  ],
 };

@@ -1,74 +1,42 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    // Ensure request is JSON
+    const contentType = request.headers.get('content-type');
+    if (!contentType?.includes('application/json')) {
+      return NextResponse.json(
+        { error: 'Invalid content type. Expected application/json' },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
+    const { email, password } = body;
 
     if (!email || !password) {
-      return NextResponse.json({
-        success: false,
-        error: 'البريد الإلكتروني وكلمة المرور مطلوبان'
-      }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Email and password are required' },
+        { status: 400 }
+      );
     }
 
-    // Check admin user in database
-    const { data: admin, error } = await supabase
-      .from('admin_users')
-      .select('id, email, name, password_hash, is_active')
-      .eq('email', email)
-      .eq('is_active', true)
-      .single();
-
-    if (error || !admin) {
-      return NextResponse.json({
-        success: false,
-        error: 'بيانات الدخول غير صحيحة'
-      }, { status: 401 });
+    // Redirect to admin login endpoint if trying to login with admin credentials
+    if (email === process.env.ADMIN_EMAIL) {
+      return NextResponse.redirect(new URL('/api/admin/login', request.url));
     }
 
-    // Simple password check (in production, use proper hashing)
-    if (admin.password_hash !== password) {
-      return NextResponse.json({
-        success: false,
-        error: 'بيانات الدخول غير صحيحة'
-      }, { status: 401 });
-    }
-
-    // Create response with session cookie
-    const response = NextResponse.json({
-      success: true,
-      admin: {
-        id: admin.id,
-        email: admin.email,
-        name: admin.name
-      }
-    });
-
-    // Set session cookie (48 hours)
-    const expires = new Date();
-    expires.setTime(expires.getTime() + (48 * 60 * 60 * 1000));
-    
-    // Use Secure only in production (not on localhost)
-    const isProduction = process.env.NODE_ENV === 'production';
-    const secureFlag = isProduction ? 'Secure; ' : '';
-    
-    response.headers.set('Set-Cookie', 
-      `admin_session=${admin.id}; Path=/; HttpOnly; ${secureFlag}SameSite=Strict; Expires=${expires.toUTCString()}`
+    // Normal user authentication would go here
+    // For now, we don't support regular user login
+    return NextResponse.json(
+      { error: 'Regular user login is not supported' },
+      { status: 403 }
     );
-
-    return response;
-
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'حدث خطأ في الخادم'
-    }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
