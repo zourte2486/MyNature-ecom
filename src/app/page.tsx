@@ -4,7 +4,6 @@ import { ProductCard } from '@/components/products/ProductCard';
 import { HeroSection } from '@/components/home/HeroSection';
 import { FeaturesSection } from '@/components/home/FeaturesSection';
 import { SearchBanner } from '@/components/home/SearchBanner';
-import { LazyWrapper } from '@/components/ui/LazyWrapper';
 import { getFeaturedProducts } from '@/lib/supabase/products';
 import { Product } from '@/lib/types';
 import { Suspense } from 'react';
@@ -45,9 +44,7 @@ export default async function Home() {
           <Suspense fallback={
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {[...Array(8)].map((_, i) => (
-                <LazyWrapper key={i} className="h-80">
-                  <div className="animate-pulse bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg h-80"></div>
-                </LazyWrapper>
+                <div key={i} className="animate-pulse bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg h-80"></div>
               ))}
             </div>
           }>
